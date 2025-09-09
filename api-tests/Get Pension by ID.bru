@@ -1,0 +1,35 @@
+meta {
+  name: Get Pension by ID
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/pension/1
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response contains pension data", function() {
+    const data = res.getBody();
+    expect(data).to.have.property('id');
+    expect(data.id).to.equal(1);
+    expect(data).to.have.property('name');
+    expect(data).to.have.property('age');
+    expect(data).to.have.property('pensionStartDate');
+    expect(data).to.have.property('monthlyAmount');
+    expect(data).to.have.property('totalContributions');
+    expect(data).to.have.property('pensionType');
+    expect(data).to.have.property('employerName');
+    expect(data).to.have.property('isActive');
+  });
+  
+  test("Monthly amount is a number", function() {
+    const data = res.getBody();
+    expect(typeof data.monthlyAmount).to.equal('number');
+    expect(data.monthlyAmount).to.be.greaterThan(0);
+  });
+}

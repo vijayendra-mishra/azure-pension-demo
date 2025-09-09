@@ -1,0 +1,33 @@
+meta {
+  name: Get All Pensions
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/pensions
+}
+
+tests {
+  test("Status is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response is an array", function() {
+    const data = res.getBody();
+    expect(Array.isArray(data)).to.be.true;
+  });
+  
+  test("Each pension has required fields", function() {
+    const data = res.getBody();
+    if (data.length > 0) {
+      const pension = data[0];
+      expect(pension).to.have.property('id');
+      expect(pension).to.have.property('name');
+      expect(pension).to.have.property('age');
+      expect(pension).to.have.property('pensionStartDate');
+      expect(pension).to.have.property('monthlyAmount');
+      expect(pension).to.have.property('pensionType');
+    }
+  });
+}

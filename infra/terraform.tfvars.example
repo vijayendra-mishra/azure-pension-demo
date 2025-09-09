@@ -1,0 +1,15 @@
+# Example Terraform variables file
+# DO NOT put sensitive values like ARM_CLIENT_SECRET here!
+
+# Environment configuration
+environment = "dev"
+location    = "UK West"
+
+# Azure authentication should be set as environment variables:
+# ARM_CLIENT_ID=your-service-principal-client-id
+# ARM_CLIENT_SECRET=your-service-principal-client-secret  
+# ARM_SUBSCRIPTION_ID=your-azure-subscription-id
+# ARM_TENANT_ID=your-azure-tenant-id
+
+# In Terraform Cloud, set these as Environment Variables (not Terraform Variables)
+# In GitHub Actions, set these as Repository Secrets
