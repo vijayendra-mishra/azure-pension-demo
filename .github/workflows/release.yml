@@ -12,86 +12,10 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - name: Run release-please
-        id: release
         uses: google-github-actions/release-please-action@v4
         with:
           release-type: simple
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
-
-  build-and-deploy:
-    if: needs.release-please.outputs.release_created
-    needs: release-please
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [development, production]
-    environment: ${{ matrix.environment }}
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0'
-    
-    - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
-    
-    - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal
-    
-    - name: Publish Function App
-      run: dotnet publish src/Functions/ --configuration Release --output ./publish
-    
-    - name: Deploy to Azure Functions (Dev)
-      if: matrix.environment == 'development'
-      uses: Azure/functions-action@v1
-      with:
-        app-name: 'vjs-pension-dev-func'
-        package: './publish'
-        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_DEV }}
-
-    - name: Deploy to Azure Functions (Prod)
-      if: matrix.environment == 'production'
-      uses: Azure/functions-action@v1
-      with:
-        app-name: 'vjs-pension-prod-func'
-        package: './publish'
-        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }}
-            head: releaseBranch,
-            base: 'main',
-            body: `## Release ${version}
-            
-            ### 🚀 Deployment Plan
-            - ✅ **DEV**: Automatically deployed when release branch was created
-            - ⏸️ **PROD**: Will deploy when this PR is merged
-            - 🏗️ **Infrastructure**: Terraform plan will run for PROD (manual apply required)
-            
-            ### 🔍 Testing Checklist
-            - [ ] DEV deployment successful
-            - [ ] Function endpoints working
-            - [ ] API tests passing
-            - [ ] Ready for production deployment
-            
-            ### 📋 Merge Instructions
-            1. Verify DEV deployment is working
-            2. Approve this PR
-            3. Merge to main
-            4. Monitor PROD deployment
-            5. Apply Terraform changes manually if needed
-            6. Release branch will be auto-deleted after successful deployment
-            `,
-            draft: false
-          });
-          
-          console.log(`Created PR #${pr.number}: ${pr.html_url}`);
