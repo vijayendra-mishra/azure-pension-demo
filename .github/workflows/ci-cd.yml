@@ -1,5 +1,6 @@
 name: CI/CD Pipeline
 
+# Simplified pipeline: test on PR, deploy to dev on main merge, deploy to prod on release
 on:
   pull_request:
     branches: [ main ]
