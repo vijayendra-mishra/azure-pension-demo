@@ -89,17 +89,7 @@ jobs:
       with:
         app-name: 'vjs-pension-prod-func'
         package: './output'
-        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }}
-    
-    - name: Clean up release branch
-      if: success()
-      run: |
-        # Extract release branch name from commit message
-        RELEASE_BRANCH=$(echo "${{ github.event.head_commit.message }}" | grep -o "release-please--branches--[^-]*--components" | head -1)
-        if [ ! -z "$RELEASE_BRANCH" ]; then
-          echo "Deleting release branch: $RELEASE_BRANCH"
-          git push origin --delete "$RELEASE_BRANCH" || echo "Branch already deleted or doesn't exist"
-        fi
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }
 
   release-please:
     needs: [test, deploy-dev]
@@ -113,3 +103,39 @@ jobs:
           release-type: simple
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  cleanup-branches:
+    needs: [deploy-prod]
+    runs-on: ubuntu-latest
+    if: always() && needs.deploy-prod.result == 'success'
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      
+      - name: Clean up release-please branches
+        run: |
+          echo "🧹 Cleaning up release-please branches after successful prod deployment..."
+          
+          # Configure git
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # Find and delete release-please branches
+          RELEASE_BRANCHES=$(git ls-remote --heads origin | grep "release-please" | cut -d$'\t' -f2 | sed 's|refs/heads/||' || true)
+          
+          if [ ! -z "$RELEASE_BRANCHES" ]; then
+            echo "📋 Found release-please branches to clean up:"
+            echo "$RELEASE_BRANCHES"
+            
+            for branch in $RELEASE_BRANCHES; do
+              echo "🗑️ Deleting branch: $branch"
+              git push origin --delete "$branch" || echo "⚠️ Could not delete $branch (may already be deleted)"
+            done
+            
+            echo "✅ Branch cleanup completed"
+          else
+            echo "ℹ️ No release-please branches found to clean up"
+          fi
