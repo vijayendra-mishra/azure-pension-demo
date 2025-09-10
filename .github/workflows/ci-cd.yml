@@ -7,6 +7,10 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -86,3 +90,16 @@ jobs:
         app-name: 'vjs-pension-prod-func'
         package: './output'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }}
+
+  release-please:
+    needs: [test, deploy-dev]
+    runs-on: ubuntu-latest
+    if: "github.ref == 'refs/heads/main' && github.event_name == 'push' && !contains(github.event.head_commit.message, 'chore(main): release')"
+    
+    steps:
+      - name: Run release-please
+        uses: googleapis/release-please-action@v4
+        with:
+          release-type: simple
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
