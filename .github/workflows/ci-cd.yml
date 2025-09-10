@@ -52,8 +52,6 @@ jobs:
     - name: Deploy to Azure Functions Dev
       uses: Azure/functions-action@v1
       with:
-        app-name: 'azure-pension-demo-dev'
-        slot-name: 'production'
         package: './output'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_DEV }}
 
@@ -83,7 +81,5 @@ jobs:
     - name: Deploy to Azure Functions Prod
       uses: Azure/functions-action@v1
       with:
-        app-name: 'azure-pension-demo-prod'
-        slot-name: 'production'
         package: './output'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }}
