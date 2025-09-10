@@ -1,15 +1,23 @@
 resource "azurerm_resource_group" "pension" {
-  name     = "vjs-pension-demo-rg"
+  name     = "vjs-pension-${var.environment}-rg"
   location = var.location
+
+  tags = {
+    "azd-env-name" = var.environment
+  }
 }
 
 resource "azurerm_storage_account" "pension" {
-  name                     = "vjspensiondemo"
+  name                     = "vjspensiondemo${var.environment}"
   resource_group_name      = azurerm_resource_group.pension.name
   location                 = azurerm_resource_group.pension.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
+
+  tags = {
+    "azd-env-name" = var.environment
+  }
 }
 
 resource "azurerm_application_insights" "pension" {
@@ -17,14 +25,23 @@ resource "azurerm_application_insights" "pension" {
   location            = azurerm_resource_group.pension.location
   resource_group_name = azurerm_resource_group.pension.name
   application_type    = "web"
+
+  tags = {
+    "azd-env-name" = var.environment
+  }
 }
 
+# App Service Plan per environment (CONSUMPTION - Pay per use!)
 resource "azurerm_service_plan" "pension" {
   name                = "vjs-pension-${var.environment}-plan"
   location            = azurerm_resource_group.pension.location
   resource_group_name = azurerm_resource_group.pension.name
   os_type             = "Linux"
-  sku_name            = "Y1"
+  sku_name            = "Y1"  # CONSUMPTION - Pay per execution (cheapest!)
+
+  tags = {
+    "azd-env-name" = var.environment
+  }
 }
 
 resource "azurerm_linux_function_app" "pension" {

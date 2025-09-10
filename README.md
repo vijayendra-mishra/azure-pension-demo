@@ -16,6 +16,25 @@ azure-pension-demo/
 └── tests/                  # Bruno API tests
 ```
 
+## 🔮 Future Enhancements Planned
+
+### **Database Integration**
+- 🐳 **Docker Compose + Azure SQL Edge**: Spin up local database environments fast for development
+- 🗃️ **EF Core Integration**: Create entities and SQL migrations efficiently using `dotnet ef` commands
+  ```bash
+  dotnet ef migrations add InitialCreate
+  dotnet ef database update
+  ```
+
+### **Advanced Testing**
+- 🧪 **Integration Tests**: TestContainers + NUnit with Docker test environments for database integration testing
+- 🚀 **API Testing**: Bruno collections for comprehensive API endpoint testing (better than Postman for CI/CD)
+
+### **Development Experience**
+- 📦 **One-Command Setup**: `docker-compose up` for complete local development environment
+- 🔄 **Hot Reload**: Database schema changes with automatic migration application
+- 🐛 **Debugging**: Full-stack debugging with containerized dependencies
+
 ## 🚀 CI/CD Pipeline Overview
 
 Our pipeline implements a **GitFlow-inspired** approach with automated deployments and releases:
@@ -367,6 +386,71 @@ GitHub → Actions → Click failed workflow → View logs
 # Prod deployment failed  
 → Check AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD secret
 ```
+
+```
+
+---
+
+## 🏢 Enterprise Infrastructure Considerations
+
+### Current Architecture: Shared App Service Plan
+This demo uses a **shared App Service Plan** for cost efficiency:
+```
+✅ 1 Shared App Service Plan (B1 Basic)
+✅ 2 Function Apps (dev + prod) 
+✅ Separate storage accounts per environment
+✅ Separate Application Insights per environment
+```
+
+### Enterprise Scaling Patterns
+
+#### **When Shared Plans Work Well:**
+- ✅ **Dev/Test environments** - Cost optimization priority
+- ✅ **Same team/application** - Similar governance needs
+- ✅ **Internal APIs** - Lower isolation requirements
+- ✅ **Complementary workloads** - Different peak usage times
+
+#### **When to Use Dedicated Plans:**
+- ❌ **Production workloads** - SLA and performance guarantees
+- ❌ **Different business units** - Billing isolation requirements
+- ❌ **Regulatory compliance** - SOX, HIPAA, PCI DSS isolation
+- ❌ **Customer-facing apps** - Blast radius concerns
+
+### **Enterprise Migration Path:**
+
+```terraform
+# Phase 1: Demo/Learning (Current)
+resource "azurerm_service_plan" "shared_basic" {
+  name     = "pension-shared-plan"
+  sku_name = "B1"    # Basic shared for cost
+}
+
+# Phase 2: Pre-Production 
+resource "azurerm_service_plan" "preprod_shared" {
+  name     = "pension-preprod-shared-plan"
+  sku_name = "S1"    # Standard shared
+}
+
+# Phase 3: Production (Enterprise)
+resource "azurerm_service_plan" "prod_dedicated" {
+  name     = "pension-prod-plan"  
+  sku_name = "P1v3"  # Premium dedicated
+}
+
+# Phase 4: Enterprise Scale
+resource "azurerm_service_plan" "prod_premium" {
+  name     = "pension-prod-plan"
+  sku_name = "EP1"   # Elastic Premium
+  # + VNet integration
+  # + Private endpoints  
+  # + Multi-region deployment
+}
+```
+
+### **Enterprise Best Practices:**
+- 🎯 **Tier 1 (Production)**: Dedicated Premium plans with VNet integration
+- 🎯 **Tier 2 (Pre-Prod)**: Shared Standard plans within same environment
+- 🎯 **Tier 3 (Development)**: Highly shared Basic plans for cost efficiency
 
 ---
 
