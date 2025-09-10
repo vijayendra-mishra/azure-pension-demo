@@ -104,7 +104,7 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  cleanup-branches:
+  post-release:
     needs: [deploy-prod]
     runs-on: ubuntu-latest
     if: always() && needs.deploy-prod.result == 'success'
@@ -123,19 +123,31 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           
-          # Find and delete release-please branches
-          RELEASE_BRANCHES=$(git ls-remote --heads origin | grep "release-please" | cut -d$'\t' -f2 | sed 's|refs/heads/||' || true)
+          # Find release-please branches with the specific pattern
+          echo "🔍 Looking for release-please branches..."
+          git ls-remote --heads origin > remote_branches.txt
+          
+          # Check for the specific release-please branch pattern
+          if grep -q "release-please--branches--main" remote_branches.txt; then
+            echo "📋 Found release-please--branches--main branch to delete"
+            git push origin --delete "release-please--branches--main" || echo "⚠️ Could not delete release-please--branches--main"
+            echo "✅ Deleted release-please--branches--main"
+          else
+            echo "ℹ️ No release-please--branches--main branch found"
+          fi
+          
+          # Also check for any other release-please branches (fallback)
+          RELEASE_BRANCHES=$(grep "release-please" remote_branches.txt | cut -d$'\t' -f2 | sed 's|refs/heads/||' || true)
           
           if [ ! -z "$RELEASE_BRANCHES" ]; then
-            echo "📋 Found release-please branches to clean up:"
+            echo "📋 Found additional release-please branches:"
             echo "$RELEASE_BRANCHES"
             
             for branch in $RELEASE_BRANCHES; do
               echo "🗑️ Deleting branch: $branch"
               git push origin --delete "$branch" || echo "⚠️ Could not delete $branch (may already be deleted)"
             done
-            
-            echo "✅ Branch cleanup completed"
-          else
-            echo "ℹ️ No release-please branches found to clean up"
           fi
+          
+          rm -f remote_branches.txt
+          echo "✅ Branch cleanup completed"
