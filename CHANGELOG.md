@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.3.0...v1.3.1) (2025-09-10)
+
+
+### Bug Fixes
+
+* prevent dev deployment on release commits ([6a64c29](https://github.com/vijayendra-mishra/azure-pension-demo/commit/6a64c29af35ea648894d1f9308c459757d6f853f))
+* prevent dev deployment on release commits ([7324c67](https://github.com/vijayendra-mishra/azure-pension-demo/commit/7324c67e6f953599e4738c4eef8934da8763c45b))
+
 ## [1.3.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.2.0...v1.3.0) (2025-09-10)
 
 
