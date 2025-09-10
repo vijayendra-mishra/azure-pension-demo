@@ -11,8 +11,10 @@ permissions:
   contents: write
   pull-requests: write
   id-token: write
-  actions: read
+  actions: write
   security-events: write
+  deployments: write
+  packages: write
 
 jobs:
   test:
@@ -37,7 +39,7 @@ jobs:
   deploy-dev:
     needs: test
     runs-on: ubuntu-latest
-    if: "github.ref == 'refs/heads/main' && github.event_name == 'push' && !contains(github.event.head_commit.message, 'chore(main): release')"
+    if: github.ref == 'refs/heads/main'
     environment: dev
     
     steps:
@@ -67,7 +69,7 @@ jobs:
   deploy-prod:
     needs: test
     runs-on: ubuntu-latest
-    if: "github.ref == 'refs/heads/main' && github.event_name == 'push' && contains(github.event.head_commit.message, 'chore(main): release')"
+    if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore(main): release')
     environment: prod
     
     steps:
@@ -97,7 +99,7 @@ jobs:
   release-please:
     needs: [test, deploy-dev]
     runs-on: ubuntu-latest
-    if: "github.ref == 'refs/heads/main' && github.event_name == 'push' && !contains(github.event.head_commit.message, 'chore(main): release')"
+    if: github.ref == 'refs/heads/main'
     
     steps:
       - name: Run release-please
@@ -108,59 +110,30 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-      
-      - name: Fallback release creation (if release-please fails)
-        if: failure()
-        run: |
-          echo "Release-please failed, attempting manual release creation..."
-          # This is a fallback - typically you'd want release-please to work
-          echo "Check repository settings: Actions → General → Workflow permissions"
-          echo "Ensure 'Read and write permissions' is selected"
 
   post-release:
     needs: [deploy-prod]
     runs-on: ubuntu-latest
-    if: always() && needs.deploy-prod.result == 'success'
+    if: needs.deploy-prod.result == 'success'
     
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           fetch-depth: 0
       
       - name: Clean up release-please branches
         run: |
-          echo "🧹 Cleaning up release-please branches after successful prod deployment..."
-          
-          # Configure git
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           
-          # Find release-please branches with the specific pattern
-          echo "🔍 Looking for release-please branches..."
-          git ls-remote --heads origin > remote_branches.txt
-          
-          # Check for the specific release-please branch pattern
-          if grep -q "release-please--branches--main" remote_branches.txt; then
-            echo "📋 Found release-please--branches--main branch to delete"
-            git push origin --delete "release-please--branches--main" || echo "⚠️ Could not delete release-please--branches--main"
-            echo "✅ Deleted release-please--branches--main"
-          else
-            echo "ℹ️ No release-please--branches--main branch found"
-          fi
-          
-          # Also check for any other release-please branches (fallback)
-          RELEASE_BRANCHES=$(grep "release-please" remote_branches.txt | cut -d$'\t' -f2 | sed 's|refs/heads/||' || true)
-          
-          if [ ! -z "$RELEASE_BRANCHES" ]; then
-            echo "📋 Found additional release-please branches:"
-            echo "$RELEASE_BRANCHES"
-            
-            for branch in $RELEASE_BRANCHES; do
+          # Delete ANY branch starting with "release-please"
+          echo "🔍 Looking for branches starting with 'release-please'..."
+          git ls-remote --heads origin | awk '/release-please/ { print $2 }' | sed 's|refs/heads/||' | while read branch; do
+            if [ ! -z "$branch" ]; then
               echo "🗑️ Deleting branch: $branch"
-              git push origin --delete "$branch" || echo "⚠️ Could not delete $branch (may already be deleted)"
-            done
-          fi
+              git push origin --delete "$branch" || echo "⚠️ Could not delete $branch"
+            fi
+          done
           
-          rm -f remote_branches.txt
-          echo "✅ Branch cleanup completed"
+          echo "✅ All release-please branches cleaned up"
