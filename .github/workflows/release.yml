@@ -68,30 +68,3 @@ jobs:
         app-name: 'vjs-pension-prod-func'
         package: './publish'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }}
-            head: releaseBranch,
-            base: 'main',
-            body: `## Release ${version}
-            
-            ### 🚀 Deployment Plan
-            - ✅ **DEV**: Automatically deployed when release branch was created
-            - ⏸️ **PROD**: Will deploy when this PR is merged
-            - 🏗️ **Infrastructure**: Terraform plan will run for PROD (manual apply required)
-            
-            ### 🔍 Testing Checklist
-            - [ ] DEV deployment successful
-            - [ ] Function endpoints working
-            - [ ] API tests passing
-            - [ ] Ready for production deployment
-            
-            ### 📋 Merge Instructions
-            1. Verify DEV deployment is working
-            2. Approve this PR
-            3. Merge to main
-            4. Monitor PROD deployment
-            5. Apply Terraform changes manually if needed
-            6. Release branch will be auto-deleted after successful deployment
-            `,
-            draft: false
-          });
-          
-          console.log(`Created PR #${pr.number}: ${pr.html_url}`);
