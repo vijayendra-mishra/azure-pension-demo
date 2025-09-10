@@ -5,7 +5,7 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/pension/1
+  url: {{baseUrl}}/pension/3
 }
 
 tests {
@@ -16,7 +16,7 @@ tests {
   test("Response contains pension data", function() {
     const data = res.getBody();
     expect(data).to.have.property('id');
-    expect(data.id).to.equal(1);
+    expect(data.id).to.equal(3);
     expect(data).to.have.property('name');
     expect(data).to.have.property('age');
     expect(data).to.have.property('pensionStartDate');
