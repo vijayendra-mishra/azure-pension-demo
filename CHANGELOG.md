@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.2.0...v1.3.0) (2025-09-10)
+
+
+### Features
+
+* enhance branch cleanup to delete all release-please branches ([afbbff1](https://github.com/vijayendra-mishra/azure-pension-demo/commit/afbbff1966aaa5f929203097fd920ebdf01bfe00))
+* enhance branch cleanup to delete all release-please branches ([e5367e3](https://github.com/vijayendra-mishra/azure-pension-demo/commit/e5367e3ac897af7966194088e3023322d0e26832))
+
+
+### Bug Fixes
+
+* correct YAML syntax in workflow conditions ([7e12da4](https://github.com/vijayendra-mishra/azure-pension-demo/commit/7e12da4677128abc49de6620364720acf9e3f3f4))
+* correct YAML syntax in workflow conditions ([04034b3](https://github.com/vijayendra-mishra/azure-pension-demo/commit/04034b3916037b174694b285fc37d001ad01feed))
+
 ## [1.2.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.1.0...v1.2.0) (2025-09-10)
 
 
