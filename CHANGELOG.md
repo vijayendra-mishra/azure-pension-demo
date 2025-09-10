@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.0.0...v1.1.0) (2025-09-10)
+
+
+### Features
+
+* improve pension query handler with shared data source ([a0aadd5](https://github.com/vijayendra-mishra/azure-pension-demo/commit/a0aadd5434ed5642d3ef453ee2d2e4d14bfdc908))
+* improve pension query handler with shared data source ([c149378](https://github.com/vijayendra-mishra/azure-pension-demo/commit/c1493781a467e4a6d9ae6711c75b500efbcbc623))
+
 ## 1.0.0 (2025-09-10)
 
 
