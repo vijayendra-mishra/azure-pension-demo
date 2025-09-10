@@ -45,9 +45,8 @@ terraform.tfstate.d/
 .env.test
 .env.production
 
-# VS Code (keep some files, ignore others)
-.vscode/settings.json
-.vscode/tasks.json
+# VS Code (ignore all .vscode directories)
+.vscode/
 .vscode/launch.json
 .vscode/*.log
 
