@@ -39,7 +39,7 @@ jobs:
   deploy-dev:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: "github.ref == 'refs/heads/main'"
     environment: dev
     
     steps:
@@ -69,7 +69,7 @@ jobs:
   deploy-prod:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore(main): release')
+    if: "github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore(main): release')"
     environment: prod
     
     steps:
@@ -99,7 +99,7 @@ jobs:
   release-please:
     needs: [test, deploy-dev]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: "github.ref == 'refs/heads/main'"
     
     steps:
       - name: Run release-please
