@@ -368,6 +368,71 @@ GitHub → Actions → Click failed workflow → View logs
 → Check AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD secret
 ```
 
+```
+
+---
+
+## 🏢 Enterprise Infrastructure Considerations
+
+### Current Architecture: Shared App Service Plan
+This demo uses a **shared App Service Plan** for cost efficiency:
+```
+✅ 1 Shared App Service Plan (B1 Basic)
+✅ 2 Function Apps (dev + prod) 
+✅ Separate storage accounts per environment
+✅ Separate Application Insights per environment
+```
+
+### Enterprise Scaling Patterns
+
+#### **When Shared Plans Work Well:**
+- ✅ **Dev/Test environments** - Cost optimization priority
+- ✅ **Same team/application** - Similar governance needs
+- ✅ **Internal APIs** - Lower isolation requirements
+- ✅ **Complementary workloads** - Different peak usage times
+
+#### **When to Use Dedicated Plans:**
+- ❌ **Production workloads** - SLA and performance guarantees
+- ❌ **Different business units** - Billing isolation requirements
+- ❌ **Regulatory compliance** - SOX, HIPAA, PCI DSS isolation
+- ❌ **Customer-facing apps** - Blast radius concerns
+
+### **Enterprise Migration Path:**
+
+```terraform
+# Phase 1: Demo/Learning (Current)
+resource "azurerm_service_plan" "shared_basic" {
+  name     = "pension-shared-plan"
+  sku_name = "B1"    # Basic shared for cost
+}
+
+# Phase 2: Pre-Production 
+resource "azurerm_service_plan" "preprod_shared" {
+  name     = "pension-preprod-shared-plan"
+  sku_name = "S1"    # Standard shared
+}
+
+# Phase 3: Production (Enterprise)
+resource "azurerm_service_plan" "prod_dedicated" {
+  name     = "pension-prod-plan"  
+  sku_name = "P1v3"  # Premium dedicated
+}
+
+# Phase 4: Enterprise Scale
+resource "azurerm_service_plan" "prod_premium" {
+  name     = "pension-prod-plan"
+  sku_name = "EP1"   # Elastic Premium
+  # + VNet integration
+  # + Private endpoints  
+  # + Multi-region deployment
+}
+```
+
+### **Enterprise Best Practices:**
+- 🎯 **Tier 1 (Production)**: Dedicated Premium plans with VNet integration
+- 🎯 **Tier 2 (Pre-Prod)**: Shared Standard plans within same environment
+- 🎯 **Tier 3 (Development)**: Highly shared Basic plans for cost efficiency
+
 ---
 
 ## 🎬 Live Demo Ready!
