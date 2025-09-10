@@ -89,7 +89,7 @@ jobs:
       with:
         app-name: 'vjs-pension-prod-func'
         package: './output'
-        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }}
 
   release-please:
     needs: [test, deploy-dev]
