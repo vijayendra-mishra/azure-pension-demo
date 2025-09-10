@@ -16,6 +16,25 @@ azure-pension-demo/
 └── tests/                  # Bruno API tests
 ```
 
+## 🔮 Future Enhancements Planned
+
+### **Database Integration**
+- 🐳 **Docker Compose + Azure SQL Edge**: Spin up local database environments fast for development
+- 🗃️ **EF Core Integration**: Create entities and SQL migrations efficiently using `dotnet ef` commands
+  ```bash
+  dotnet ef migrations add InitialCreate
+  dotnet ef database update
+  ```
+
+### **Advanced Testing**
+- 🧪 **Integration Tests**: TestContainers + NUnit with Docker test environments for database integration testing
+- 🚀 **API Testing**: Bruno collections for comprehensive API endpoint testing (better than Postman for CI/CD)
+
+### **Development Experience**
+- 📦 **One-Command Setup**: `docker-compose up` for complete local development environment
+- 🔄 **Hot Reload**: Database schema changes with automatic migration application
+- 🐛 **Debugging**: Full-stack debugging with containerized dependencies
+
 ## 🚀 CI/CD Pipeline Overview
 
 Our pipeline implements a **GitFlow-inspired** approach with automated deployments and releases:
