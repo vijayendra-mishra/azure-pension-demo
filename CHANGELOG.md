@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.2.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.1.0...v1.2.0) (2025-09-10)
+
+
+### Features
+
+* improve post-release branch cleanup ([6bb9585](https://github.com/vijayendra-mishra/azure-pension-demo/commit/6bb95859712bf3858cbcd2750874d5d602c8f770))
+
+
+### Bug Fixes
+
+* add required GitHub Actions permissions for release-please ([dd4d573](https://github.com/vijayendra-mishra/azure-pension-demo/commit/dd4d573b6c8491a6fe8c8ba7eab70efcd171ff8c))
+* add required GitHub Actions permissions for release-please ([9c7fdee](https://github.com/vijayendra-mishra/azure-pension-demo/commit/9c7fdee2bed1c106c9db5249c81dc57d88da9520))
+* close unclosed GitHub Actions expression ([fcd630f](https://github.com/vijayendra-mishra/azure-pension-demo/commit/fcd630f8eebaac917adaee12909165157b41122a))
+* close unclosed GitHub Actions expression ([e183030](https://github.com/vijayendra-mishra/azure-pension-demo/commit/e183030cd2f25ba6b45255ce1fd554066b232779))
+* update Bruno test to expect correct pension ID ([0ff13e9](https://github.com/vijayendra-mishra/azure-pension-demo/commit/0ff13e91cdaafebb062b1b40d81a1c6cb8eaa03a))
+* use Personal Access Token for release-please ([9d186ea](https://github.com/vijayendra-mishra/azure-pension-demo/commit/9d186eae6fc96286f0533ed063627fc3d42f59e6))
+* use Personal Access Token for release-please ([1c5067a](https://github.com/vijayendra-mishra/azure-pension-demo/commit/1c5067a341384455e86211f5d8fc3e2f0de2e5e4))
+
 ## [1.1.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.0.0...v1.1.0) (2025-09-10)
 
 
