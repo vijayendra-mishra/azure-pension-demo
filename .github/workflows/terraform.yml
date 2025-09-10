@@ -1,0 +1,83 @@
+name: Terraform Plan
+
+on:
+  push:
+    branches: [ main, 'feature/**' ]
+    paths: [ 'infra/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'infra/**' ]
+
+jobs:
+  terraform-plan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, prod]
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.13.1
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+    
+    - name: Terraform Init
+      working-directory: ./infra
+      run: terraform init
+    
+    - name: Select Workspace
+      working-directory: ./infra
+      run: terraform workspace select ${{ matrix.environment }}
+    
+    - name: Terraform Validate
+      working-directory: ./infra
+      run: terraform validate
+    
+    - name: Terraform Plan
+      working-directory: ./infra
+      run: |
+        terraform plan \
+          -var="environment=${{ matrix.environment }}" \
+          -no-color \
+          -out=tfplan-${{ matrix.environment }}
+    
+    - name: Comment Plan on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const environment = '${{ matrix.environment }}';
+          const { execSync } = require('child_process');
+          
+          // Get plan output
+          const planOutput = execSync('cd infra && terraform show -no-color tfplan-' + environment, { encoding: 'utf8' });
+          
+          // Create comment body
+          const body = `## Terraform Plan - ${environment.toUpperCase()}
+          
+          <details>
+          <summary>Click to view plan output</summary>
+          
+          \`\`\`terraform
+          ${planOutput}
+          \`\`\`
+          
+          </details>`;
+          
+          // Post comment
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });
+    
+    - name: Upload Plan Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: terraform-plan-${{ matrix.environment }}
+        path: infra/tfplan-${{ matrix.environment }}

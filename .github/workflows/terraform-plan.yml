@@ -1,0 +1,138 @@
+name: Terraform Plan
+
+on:
+  push:
+    branches: [ main, 'feature/**' ]
+    paths: 
+      - 'infra/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'infra/**'
+
+env:
+  TF_VERSION: '1.13.1'
+
+jobs:
+  terraform-plan:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, prod]
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    - name: Terraform Format Check
+      id: fmt
+      run: terraform fmt -check
+      working-directory: ./infra
+      continue-on-error: true
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+      working-directory: ./infra
+
+    - name: Terraform Workspace Select
+      id: workspace
+      run: terraform workspace select ${{ matrix.environment }}
+      working-directory: ./infra
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+      working-directory: ./infra
+
+    - name: Terraform Plan
+      id: plan
+      run: |
+        terraform plan -no-color -var="environment=${{ matrix.environment }}" \
+          -out=tfplan-${{ matrix.environment }} \
+          -detailed-exitcode
+      working-directory: ./infra
+      continue-on-error: true
+
+    - name: Save Plan Output
+      if: steps.plan.outputs.exitcode == 2
+      run: |
+        terraform show -no-color tfplan-${{ matrix.environment }} > plan-output-${{ matrix.environment }}.txt
+      working-directory: ./infra
+
+    - name: Upload Plan Artifact
+      if: steps.plan.outputs.exitcode == 2
+      uses: actions/upload-artifact@v3
+      with:
+        name: terraform-plan-${{ matrix.environment }}
+        path: infra/plan-output-${{ matrix.environment }}.txt
+
+    - name: Comment PR (if PR)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const environment = '${{ matrix.environment }}';
+          const exitCode = '${{ steps.plan.outputs.exitcode }}';
+          const planOutput = `${{ steps.plan.outputs.stdout }}`;
+          
+          let status = '';
+          let emoji = '';
+          
+          if (exitCode == '0') {
+            status = 'No changes';
+            emoji = '✅';
+          } else if (exitCode == '2') {
+            status = 'Changes detected';
+            emoji = '⚠️';
+          } else {
+            status = 'Plan failed';
+            emoji = '❌';
+          }
+          
+          const output = `### ${emoji} Terraform Plan (${environment})
+          
+          **Status**: ${status}
+          **Exit Code**: ${exitCode}
+          
+          <details>
+          <summary>Show Plan Output</summary>
+          
+          \`\`\`terraform
+          ${planOutput}
+          \`\`\`
+          
+          </details>
+          
+          *Plan run for commit ${{ github.sha }}*`;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: output
+          });
+
+    - name: Plan Summary
+      run: |
+        echo "## Terraform Plan Summary (${{ matrix.environment }})" >> $GITHUB_STEP_SUMMARY
+        echo "- **Format Check**: ${{ steps.fmt.outcome }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Init**: ${{ steps.init.outcome }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Validate**: ${{ steps.validate.outcome }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Plan**: ${{ steps.plan.outcome }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Exit Code**: ${{ steps.plan.outputs.exitcode }}" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ steps.plan.outputs.exitcode }}" == "2" ]; then
+          echo "- **Changes**: Infrastructure changes detected!" >> $GITHUB_STEP_SUMMARY
+        elif [ "${{ steps.plan.outputs.exitcode }}" == "0" ]; then
+          echo "- **Changes**: No infrastructure changes needed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- **Changes**: Plan execution failed" >> $GITHUB_STEP_SUMMARY
+        fi
