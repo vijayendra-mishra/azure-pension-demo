@@ -23,13 +23,13 @@ jobs:
         dotnet-version: '8.0.x'
     
     - name: Restore dependencies
-      run: dotnet restore src/Functions/Functions.csproj
+      run: dotnet restore PensionDemo.sln
     
     - name: Build
-      run: dotnet build src/Functions/Functions.csproj --no-restore
+      run: dotnet build PensionDemo.sln --no-restore
     
     - name: Test
-      run: dotnet test src/Functions/Functions.csproj --no-build --verbosity normal
+      run: dotnet test PensionDemo.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"
 
   deploy-dev:
     needs: test
@@ -48,10 +48,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/Functions/Functions.csproj
     
-    - name: Build
+    - name: Build Functions
       run: dotnet build src/Functions/Functions.csproj --configuration Release
     
-    - name: Publish
+    - name: Publish Functions
       run: dotnet publish src/Functions/Functions.csproj --configuration Release --output ./output
     
     - name: Deploy to Azure Functions Dev
@@ -78,10 +78,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/Functions/Functions.csproj
     
-    - name: Build
+    - name: Build Functions
       run: dotnet build src/Functions/Functions.csproj --configuration Release
     
-    - name: Publish
+    - name: Publish Functions
       run: dotnet publish src/Functions/Functions.csproj --configuration Release --output ./output
     
     - name: Deploy to Azure Functions Prod
