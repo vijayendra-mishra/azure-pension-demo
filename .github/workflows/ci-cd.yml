@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 'feature/**' ]
   pull_request:
     branches: [ main ]
 
@@ -62,7 +62,3 @@ jobs:
         app-name: 'vjs-pension-dev-func'
         package: './publish'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_DEV }}
-          git push origin --delete $RELEASE_BRANCH || echo "Branch may already be deleted"
-        else
-          echo "No release branch found in commit message"
-        fi
