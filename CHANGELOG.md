@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.0.0 (2025-09-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* Switch from manual release branches to automated release-please workflow
+
+### Features
+
+* add automatic release branch cleanup after production deployment ([8a66c05](https://github.com/vijayendra-mishra/azure-pension-demo/commit/8a66c053bc69d5808a543980de73915e7d1b3ccf))
+* Add import block for existing resource group ([71b06b9](https://github.com/vijayendra-mishra/azure-pension-demo/commit/71b06b93bc8403bf115150632d55a817d68f3930))
+* add terraform plan automation workflow ([6f1d616](https://github.com/vijayendra-mishra/azure-pension-demo/commit/6f1d6169d5603c24567488b63ee55e85f506ddb9))
+* Complete project restructure and CI/CD pipeline setup ([21001cc](https://github.com/vijayendra-mishra/azure-pension-demo/commit/21001cc7e2b8b1e17890e75b41f3a593a4a76b41))
+* Configure release-please automation and simplify CI/CD ([85d1f74](https://github.com/vijayendra-mishra/azure-pension-demo/commit/85d1f74ca8513ad26cfc60090d13d9216bd1cdb3))
+* fix unit test execution and add comprehensive demo README ([0fb2ac5](https://github.com/vijayendra-mishra/azure-pension-demo/commit/0fb2ac5b832d45af04f96a6292dda3f18d03d01f))
+* fix unit test execution and add comprehensive demo README ([b029a99](https://github.com/vijayendra-mishra/azure-pension-demo/commit/b029a9984a56ecbac6662bcb7f42c86e77458e98))
+* integrate release-please with CI/CD pipeline for safe releases ([c956db4](https://github.com/vijayendra-mishra/azure-pension-demo/commit/c956db4e0513570122dd9320617152a1f47d76d6))
+* migrate to shared service plan ([7861c0c](https://github.com/vijayendra-mishra/azure-pension-demo/commit/7861c0c7f0ab8af6d25993dce09c8e7c8a31a84b))
+* simplify CI/CD pipeline and remove terraform workflows ([8e5bed8](https://github.com/vijayendra-mishra/azure-pension-demo/commit/8e5bed8922a4c9eaf47ec6c1fb8883a728544e3a))
+* switch to completely FREE infrastructure! ([de5e33f](https://github.com/vijayendra-mishra/azure-pension-demo/commit/de5e33fc319ca9631259a83e3ddd1c02e38b69df))
+
+
+### Bug Fixes
+
+* configure release-please permissions for GitHub Actions ([ff30459](https://github.com/vijayendra-mishra/azure-pension-demo/commit/ff30459f203b8ae01de2adf14c4f7e578746e66a))
+* Correct CI/CD workflow configuration ([46f97ff](https://github.com/vijayendra-mishra/azure-pension-demo/commit/46f97ff6b607eb8cdd32535c773b812c84f5675f))
+* Correct YAML syntax error in release workflow ([3c1dfb8](https://github.com/vijayendra-mishra/azure-pension-demo/commit/3c1dfb87db655ca43c1dec114f9a088abd073bc9))
+* modernize release-please and fix Azure Functions deployment ([3df2d48](https://github.com/vijayendra-mishra/azure-pension-demo/commit/3df2d48f9f0e073e684c63360a70fe1f35acd3f7))
+* quote complex if conditions in GitHub Actions workflow ([8b28e83](https://github.com/vijayendra-mishra/azure-pension-demo/commit/8b28e83749f4505611a1b7babfd520fbdcd4d8d9))
+* remove duplicate terraform backend configurations ([d094c30](https://github.com/vijayendra-mishra/azure-pension-demo/commit/d094c3046324ff8f3c65a7f1ce07f9e8fda41ea9))
+* remove hardcoded slot-name and app-name from Azure Functions deployment ([4a66f44](https://github.com/vijayendra-mishra/azure-pension-demo/commit/4a66f443b122aa04ad593e05afb81dd403a78aed))
+* switch to Consumption plan for Azure Functions ([a1f5642](https://github.com/vijayendra-mishra/azure-pension-demo/commit/a1f56427c7ec5ca6cf58409bdcec7789321a3f82))
+
 ## [1.0.0] - 2025-09-10
 
 ### Features
