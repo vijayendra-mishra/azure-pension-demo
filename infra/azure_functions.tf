@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "pension" {
-  name     = "vjs-pension-demo-rg"
+  name     = "vjs-pension-${var.environment}-rg"
   location = var.location
 
   tags = {
@@ -31,13 +31,13 @@ resource "azurerm_application_insights" "pension" {
   }
 }
 
-# Shared App Service Plan for both dev and prod
-resource "azurerm_service_plan" "pension_shared" {
-  name                = "vjs-pension-shared-plan"
+# App Service Plan per environment (FREE TIER!)
+resource "azurerm_service_plan" "pension" {
+  name                = "vjs-pension-${var.environment}-plan"
   location            = azurerm_resource_group.pension.location
   resource_group_name = azurerm_resource_group.pension.name
   os_type             = "Linux"
-  sku_name            = "B1"  # Basic tier for shared plan
+  sku_name            = "F1"  # FREE TIER - $0 cost!
 
   tags = {
     "azd-env-name" = var.environment
@@ -48,7 +48,7 @@ resource "azurerm_linux_function_app" "pension" {
   name                = "vjs-pension-${var.environment}-func"
   location            = azurerm_resource_group.pension.location
   resource_group_name = azurerm_resource_group.pension.name
-  service_plan_id     = azurerm_service_plan.pension_shared.id
+  service_plan_id     = azurerm_service_plan.pension.id
 
   storage_account_name       = azurerm_storage_account.pension.name
   storage_account_access_key = azurerm_storage_account.pension.primary_access_key
