@@ -7,6 +7,10 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -53,6 +57,7 @@ jobs:
     - name: Deploy to Azure Functions Dev
       uses: Azure/functions-action@v1
       with:
+        app-name: 'vjs-pension-dev-func'
         package: './output'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_DEV }}
 
@@ -82,5 +87,29 @@ jobs:
     - name: Deploy to Azure Functions Prod
       uses: Azure/functions-action@v1
       with:
+        app-name: 'vjs-pension-prod-func'
         package: './output'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }}
+    
+    - name: Clean up release branch
+      if: success()
+      run: |
+        # Extract release branch name from commit message
+        RELEASE_BRANCH=$(echo "${{ github.event.head_commit.message }}" | grep -o "release-please--branches--[^-]*--components" | head -1)
+        if [ ! -z "$RELEASE_BRANCH" ]; then
+          echo "Deleting release branch: $RELEASE_BRANCH"
+          git push origin --delete "$RELEASE_BRANCH" || echo "Branch already deleted or doesn't exist"
+        fi
+
+  release-please:
+    needs: [test, deploy-dev]
+    runs-on: ubuntu-latest
+    if: "github.ref == 'refs/heads/main' && github.event_name == 'push' && !contains(github.event.head_commit.message, 'chore(main): release')"
+    
+    steps:
+      - name: Run release-please
+        uses: googleapis/release-please-action@v4
+        with:
+          release-type: simple
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
