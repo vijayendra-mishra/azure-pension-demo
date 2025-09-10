@@ -8,6 +8,8 @@ using System.Text.Json;
 
 namespace Functions;
 
+// Test deployment with shared App Service Plan
+
 public class PensionFunctions
 {
     private readonly ILogger<PensionFunctions> _logger;
