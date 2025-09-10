@@ -31,13 +31,13 @@ resource "azurerm_application_insights" "pension" {
   }
 }
 
-# App Service Plan per environment (FREE TIER!)
+# App Service Plan per environment (CONSUMPTION - Pay per use!)
 resource "azurerm_service_plan" "pension" {
   name                = "vjs-pension-${var.environment}-plan"
   location            = azurerm_resource_group.pension.location
   resource_group_name = azurerm_resource_group.pension.name
   os_type             = "Linux"
-  sku_name            = "F1"  # FREE TIER - $0 cost!
+  sku_name            = "Y1"  # CONSUMPTION - Pay per execution (cheapest!)
 
   tags = {
     "azd-env-name" = var.environment
