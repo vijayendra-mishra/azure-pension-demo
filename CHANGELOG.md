@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.1](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.4.0...v1.4.1) (2025-09-11)
+
+
+### Bug Fixes
+
+* improve release-please timing in CI/CD pipeline ([fbccc03](https://github.com/vijayendra-mishra/azure-pension-demo/commit/fbccc035365beab1064928f5642b9c9820735d29))
+* improve release-please timing in CI/CD pipeline ([8bbc4d5](https://github.com/vijayendra-mishra/azure-pension-demo/commit/8bbc4d56e7eab350ae76552ce15c3a1b29711ec5))
+* remove duplicate release workflows ([e7ba2c1](https://github.com/vijayendra-mishra/azure-pension-demo/commit/e7ba2c1e93d4f520f21320f97d8e785577387438))
+* remove duplicate release workflows ([a02a3b2](https://github.com/vijayendra-mishra/azure-pension-demo/commit/a02a3b28921a9a5e3dc4ef4e08e5bc7b83093e7a))
+
 ## [1.4.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.3.2...v1.4.0) (2025-09-11)
 
 
