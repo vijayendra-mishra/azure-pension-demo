@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.2](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.3.1...v1.3.2) (2025-09-11)
+
+
+### Bug Fixes
+
+* make Bruno test dynamic for any pension ID ([1ebca28](https://github.com/vijayendra-mishra/azure-pension-demo/commit/1ebca282d83d698efb8fef07678dbb3edfe988e3))
+* make Bruno test dynamic for any pension ID ([51482bc](https://github.com/vijayendra-mishra/azure-pension-demo/commit/51482bc6f97414683ae451ea2eadc41808d76ed1))
+
 ## [1.3.1](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.3.0...v1.3.1) (2025-09-10)
 
 
