@@ -97,9 +97,11 @@ jobs:
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }}
 
   release-please:
+    # Runs after dev deployment completes successfully
+    # Only creates release if there are conventional commits since last release
     needs: [test, deploy-dev]
     runs-on: ubuntu-latest
-    if: "github.ref == 'refs/heads/main'"
+    if: "github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(main): release') && needs.deploy-dev.result == 'success'"
     
     steps:
       - name: Run release-please
