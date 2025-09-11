@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.4.1...v1.4.2) (2025-09-11)
+
+
+### Bug Fixes
+
+* **new-changes:** changed user name ([a9bcac1](https://github.com/vijayendra-mishra/azure-pension-demo/commit/a9bcac1c7ec45a61738eee17cc20a56d74eee37b))
+* **new-changes:** changed user name ([c97bca6](https://github.com/vijayendra-mishra/azure-pension-demo/commit/c97bca601d5ec9829ffa4a572b959adab8312505))
+
 ## [1.4.1](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.4.0...v1.4.1) (2025-09-11)
 
 
