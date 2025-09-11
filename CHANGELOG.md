@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.3.2...v1.4.0) (2025-09-11)
+
+
+### Features
+
+* improve project structure and testing framework ([78b471e](https://github.com/vijayendra-mishra/azure-pension-demo/commit/78b471e6c85fad29f68c0d38f21bd286dbefaa99))
+* improve project structure and testing framework ([48d42f2](https://github.com/vijayendra-mishra/azure-pension-demo/commit/48d42f28ed306a4b891bed8623775519240adf3d))
+
 ## [1.3.2](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.3.1...v1.3.2) (2025-09-11)
 
 
