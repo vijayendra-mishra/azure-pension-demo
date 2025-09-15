@@ -39,7 +39,10 @@ jobs:
   deploy-dev:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(main) release')
+    if: >
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' && 
+      !contains(github.event.head_commit.message, 'chore(main): release')
     environment: dev
     
     steps:
@@ -69,7 +72,10 @@ jobs:
   deploy-prod:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore(main) release')
+    if: >
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' && 
+      contains(github.event.head_commit.message, 'chore(main): release')
     environment: prod
     
     steps:
@@ -101,7 +107,11 @@ jobs:
     # Only creates release if there are conventional commits since last release
     needs: [test, deploy-dev]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(main) release') && needs.deploy-dev.result == 'success'
+    if: >
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' && 
+      !contains(github.event.head_commit.message, 'chore(main): release') && 
+      needs.deploy-dev.result == 'success'
     
     steps:
       - name: Run release-please
@@ -116,7 +126,11 @@ jobs:
   post-release:
     needs: [deploy-prod]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore(main) release') && needs.deploy-prod.result == 'success'
+    if: >
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' && 
+      contains(github.event.head_commit.message, 'chore(main): release') && 
+      needs.deploy-prod.result == 'success'
     
     steps:
       - uses: actions/checkout@v4
