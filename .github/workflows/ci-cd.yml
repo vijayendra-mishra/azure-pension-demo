@@ -19,10 +19,6 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    # Skip tests for release-please PRs, run on all other PRs and pushes to main
-    if: >
-      (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'release-please--')) ||
-      (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
     - uses: actions/checkout@v4
     
@@ -43,11 +39,7 @@ jobs:
   deploy-dev:
     needs: test
     runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'push' && 
-      github.ref == 'refs/heads/main' && 
-      !contains(github.event.head_commit.message, 'chore(main) release') &&
-      (needs.test.result == 'success')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(main) release')
     environment: dev
     
     steps:
@@ -77,11 +69,7 @@ jobs:
   deploy-prod:
     needs: test
     runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'push' && 
-      github.ref == 'refs/heads/main' && 
-      contains(github.event.head_commit.message, 'chore(main) release') &&
-      (needs.test.result == 'success')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore(main) release')
     environment: prod
     
     steps:
@@ -128,11 +116,7 @@ jobs:
   post-release:
     needs: [deploy-prod]
     runs-on: ubuntu-latest
-    if: >
-      github.event_name == 'push' && 
-      github.ref == 'refs/heads/main' && 
-      contains(github.event.head_commit.message, 'chore(main) release') &&
-      needs.deploy-prod.result == 'success'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'chore(main) release') && needs.deploy-prod.result == 'success'
     
     steps:
       - uses: actions/checkout@v4
