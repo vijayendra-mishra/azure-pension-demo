@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.4.5...v1.5.0) (2025-09-15)
+
+
+### Features
+
+* **data:** update Michael Brown to Michael Test for testing production deployment pipeline ([8e971bd](https://github.com/vijayendra-mishra/azure-pension-demo/commit/8e971bd27227fc86219a95bc43a4ced2fec6a3be))
+
 ## [1.4.5](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.4.4...v1.4.5) (2025-09-15)
 
 
