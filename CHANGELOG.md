@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.3](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.5.2...v1.5.3) (2025-09-15)
+
+
+### Bug Fixes
+
+* **ci-cd:** CRITICAL FIX - use correct commit message format 'chore(m… ([1105510](https://github.com/vijayendra-mishra/azure-pension-demo/commit/1105510027432473a91c94f45c6c933827669b41))
+* **ci-cd:** CRITICAL FIX - use correct commit message format 'chore(main): release' with colon ([c21a07a](https://github.com/vijayendra-mishra/azure-pension-demo/commit/c21a07a508104d3b4983eb897020f259ce7d325a))
+
 ## [1.5.2](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.5.1...v1.5.2) (2025-09-15)
 
 
