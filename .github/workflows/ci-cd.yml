@@ -6,8 +6,6 @@ on:
     branches: [ main ]
   push:
     branches: [ main ]
-  release:
-    types: [published]
 
 permissions:
   contents: write
@@ -21,6 +19,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Run tests on all PRs and all pushes to main
     steps:
     - uses: actions/checkout@v4
     
@@ -41,7 +40,11 @@ jobs:
   deploy-dev:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(main) release')
+    if: >
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' && 
+      !contains(github.event.head_commit.message, 'chore(main) release') &&
+      needs.test.result == 'success'
     environment: dev
     
     steps:
@@ -71,7 +74,11 @@ jobs:
   deploy-prod:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' && github.event.action == 'published'
+    if: >
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' && 
+      contains(github.event.head_commit.message, 'chore(main) release') &&
+      needs.test.result == 'success'
     environment: prod
     
     steps:
@@ -118,7 +125,11 @@ jobs:
   post-release:
     needs: [deploy-prod]
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' && github.event.action == 'published' && needs.deploy-prod.result == 'success'
+    if: >
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' && 
+      contains(github.event.head_commit.message, 'chore(main) release') &&
+      needs.deploy-prod.result == 'success'
     
     steps:
       - uses: actions/checkout@v4
