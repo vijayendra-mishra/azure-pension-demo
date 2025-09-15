@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.2](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.5.1...v1.5.2) (2025-09-15)
+
+
+### Bug Fixes
+
+* **ci-cd:** simplify workflow conditions for reliable deployment ([5117d4a](https://github.com/vijayendra-mishra/azure-pension-demo/commit/5117d4a90712803639c3dd0d5a9e888d67a93d07))
+* **ci-cd:** simplify workflow conditions for reliable deployment ([377b368](https://github.com/vijayendra-mishra/azure-pension-demo/commit/377b3681f8afb4382b9512c13742d41cbb7e7f13))
+
 ## [1.5.1](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.5.0...v1.5.1) (2025-09-15)
 
 
