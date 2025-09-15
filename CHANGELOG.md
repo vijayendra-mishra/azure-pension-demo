@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.5](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.4.4...v1.4.5) (2025-09-15)
+
+
+### Bug Fixes
+
+* **ci-cd:** correct workflow to deploy prod only on release commits, … ([b8ea112](https://github.com/vijayendra-mishra/azure-pension-demo/commit/b8ea1126f3ccbf7c8298c589400348802acfa9f2))
+* **ci-cd:** correct workflow to deploy prod only on release commits, not dev ([0b8e5de](https://github.com/vijayendra-mishra/azure-pension-demo/commit/0b8e5de30fef3b5f8755476a2554c168545f6c82))
+
 ## [1.4.4](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.4.3...v1.4.4) (2025-09-15)
 
 
