@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.1](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.5.0...v1.5.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* **ci-cd:** exclude release-please PRs from tests and ensure proper p… ([8bc9f9e](https://github.com/vijayendra-mishra/azure-pension-demo/commit/8bc9f9e9b1f184bf00e05d0870accf963ac25c82))
+* **ci-cd:** exclude release-please PRs from tests and ensure proper prod deployment ([7ed491f](https://github.com/vijayendra-mishra/azure-pension-demo/commit/7ed491f61aa2c67602b03197e7cddbd2ced8d503))
+
 ## [1.5.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.4.5...v1.5.0) (2025-09-15)
 
 
