@@ -34,7 +34,7 @@ This project showcases enterprise-grade Azure development patterns including:
 - **Infrastructure**: Azure Functions Consumption Plan
 - **CI/CD**: GitHub Actions with Release Please
 - **IaC**: Terraform with Azure Provider
-- **Testing**: Bruno for API testing, xUnit for unit tests
+- **Testing**: Bruno for API testing, NUnit for unit tests
 - **Monitoring**: Azure Application Insights integration
 
 ## 📋 Features
