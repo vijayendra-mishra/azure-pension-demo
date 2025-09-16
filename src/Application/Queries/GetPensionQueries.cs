@@ -41,7 +41,7 @@ public class GetPensionQueryHandler : IRequestHandler<GetPensionQuery, Pension?>
         new()
         {
             Id = 3,
-            Name = "Michael Test",
+            Name = "Michael Seils",
             Age = 58,
             PensionStartDate = new DateTime(2027, 3, 1),
             MonthlyAmount = 3200.00m,
