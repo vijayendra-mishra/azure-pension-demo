@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.5.3...v1.6.0) (2025-09-16)
+
+
+### Features
+
+* **data:** change Michael Test back to Michael Seils for production … ([b920cec](https://github.com/vijayendra-mishra/azure-pension-demo/commit/b920cec42aa1d73289807785e521c3c19d97af56))
+* **data:** change Michael Test back to Michael Seils for production demo ([252b2cd](https://github.com/vijayendra-mishra/azure-pension-demo/commit/252b2cd83b25e3f923ffae3bba8897001a7fc62b))
+
 ## [1.5.3](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.5.2...v1.5.3) (2025-09-15)
 
 
