@@ -61,16 +61,16 @@ jobs:
         }
         EOF
     
-    - name: Terraform Init
-      run: cd terraform && terraform init
+    - name: Terraform Init and Select Dev Workspace
+      run: |
+        cd terraform
+        terraform init -input=false
+        terraform workspace select dev || terraform workspace new dev
       env:
         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-    
-    - name: Terraform Workspace Select Dev
-      run: cd terraform && terraform workspace select dev || terraform workspace new dev
     
     - name: Terraform Plan Dev
       run: cd terraform && terraform plan -var-file=environments/dev/terraform.tfvars -out=tfplan-dev
