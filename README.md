@@ -1,56 +1,109 @@
-# 🏦 Azure Pension Demo# 🏦 Azure Pension Demo
+# 🏦 Azure Pension Demo# 🏦 Azure Pension Demo# 🏦 Azure Pension Demo
 
 
 
-A comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.A comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.
+A .NET 8 Azure Functions demo with automated CI/CD, Infrastructure as Code, and complete documentation.
 
 
 
-## 📚 Documentation## 🚀 Overview
+## 📚 DocumentationA comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.A comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.
 
 
+
+- **[Project Overview](./docs/README.md)** - Architecture, setup, and features
+
+- **[CI/CD Pipeline](./docs/CI_CD_PIPELINE.md)** - Pipeline details and jobs
+
+- **[Release-Please Guide](./docs/RELEASE_PLEASE_GUIDE.md)** - Automated releases## 📚 Documentation## 🚀 Overview
+
+- **[Changelog](./docs/CHANGELOG.md)** - Release history
+
+
+
+## 🚀 Quick Start
 
 All project documentation has been organized in the `/docs` folder:This project showcases enterprise-grade Azure development patterns including:
 
+```bash
 
+# Clone and setup
 
-- **[Project Overview & Quick Start](./docs/README.md)** - Architecture, setup instructions, and features- **Azure Functions** with .NET 8 Isolated Worker Model
+git clone https://github.com/vijayendra-mishra/azure-pension-demo.git
+
+cd azure-pension-demo- **[Project Overview & Quick Start](./docs/README.md)** - Architecture, setup instructions, and features- **Azure Functions** with .NET 8 Isolated Worker Model
+
+dotnet restore && dotnet build
 
 - **[CI/CD Pipeline Documentation](./docs/CI_CD_PIPELINE.md)** - Complete pipeline explanation with job specifications- **Clean Architecture** with Domain, Application, and Functions layers
 
-- **[Release-Please Guide](./docs/RELEASE_PLEASE_GUIDE.md)** - Team guide for automated versioning and releases- **Automated CI/CD** with GitHub Actions and Release Please
+# Run tests
 
-- **[Release History](./docs/CHANGELOG.md)** - Full changelog and version history- **Infrastructure as Code** with Terraform
-
-- **API Testing** with Bruno
-
-## 🚀 Quick Start- **Monitoring & Observability** ready for Azure Application Insights
+dotnet test- **[Release-Please Guide](./docs/RELEASE_PLEASE_GUIDE.md)** - Team guide for automated versioning and releases- **Automated CI/CD** with GitHub Actions and Release Please
 
 
+
+# Start locally- **[Release History](./docs/CHANGELOG.md)** - Full changelog and version history- **Infrastructure as Code** with Terraform
+
+cd src/Functions && func start
+
+```- **API Testing** with Bruno
+
+
+
+**API Endpoints:**## 🚀 Quick Start- **Monitoring & Observability** ready for Azure Application Insights
+
+- Health: http://localhost:7071/api/health
+
+- All Pensions: http://localhost:7071/api/pensions
+
+- Specific: http://localhost:7071/api/pension/{id}
 
 ### Prerequisites## 🏗️ Architecture
 
+## 🏗️ Stack
+
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 
-- [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)```
+- **Runtime:** .NET 8 Azure Functions
 
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)├── src/
+- **Architecture:** Clean Architecture + CQRS- [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)```
+
+- **CI/CD:** GitHub Actions + Release Please
+
+- **Infrastructure:** Terraform- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)├── src/
+
+- **Testing:** NUnit + Bruno
 
 │   ├── Domain/           # Core business entities
 
+## 🔄 Deployment
+
 ### Get Started│   ├── Application/      # Business logic & CQRS queries
 
-│   ├── Functions/        # Azure Functions HTTP triggers
+- **Dev:** Automatic on push to main
 
-1. **Clone the repository**│   └── Tests/           # Unit tests
+- **Prod:** Automatic on release│   ├── Functions/        # Azure Functions HTTP triggers
 
-   ```bash├── terraform/           # Infrastructure as Code
 
-   git clone https://github.com/vijayendra-mishra/azure-pension-demo.git├── bruno/              # API testing collections
 
-   cd azure-pension-demo├── .github/workflows/  # CI/CD pipeline
+See [CI/CD Pipeline docs](./docs/CI_CD_PIPELINE.md) for details.1. **Clone the repository**│   └── Tests/           # Unit tests
 
-   ```└── .release-please/   # Automated versioning
+
+
+## 📞 Support   ```bash├── terraform/           # Infrastructure as Code
+
+
+
+Open a GitHub issue for questions.   git clone https://github.com/vijayendra-mishra/azure-pension-demo.git├── bruno/              # API testing collections
+
+
+
+---   cd azure-pension-demo├── .github/workflows/  # CI/CD pipeline
+
+
+
+Built with Azure Functions, .NET 8, and modern DevOps practices   ```└── .release-please/   # Automated versioning
+
 
 ```
 
