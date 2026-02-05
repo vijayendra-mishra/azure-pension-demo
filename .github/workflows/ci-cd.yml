@@ -19,6 +19,8 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Run tests on PRs to main, and on pushes to main only
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
     - uses: actions/checkout@v4
     
@@ -47,13 +49,30 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Check if Terraform files changed
+      id: terraform-changes
+      run: |
+        if git diff --name-only HEAD~1 HEAD | grep -E '^terraform/' > /dev/null; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "changed=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Skip if no Terraform changes
+      if: steps.terraform-changes.outputs.changed == 'false'
+      run: echo "⏭️  Skipping infrastructure job - no Terraform changes detected"
     
     - name: Setup Terraform
+      if: steps.terraform-changes.outputs.changed == 'true'
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: latest
     
     - name: Create .terraformrc
+      if: steps.terraform-changes.outputs.changed == 'true'
       run: |
         cat > ~/.terraformrc << EOF
         credentials "app.terraform.io" {
@@ -62,31 +81,36 @@ jobs:
         EOF
     
     - name: Terraform Init and Select Dev Workspace
+      if: steps.terraform-changes.outputs.changed == 'true'
       run: |
         cd terraform
-        terraform init -input=false
-        terraform workspace select dev || terraform workspace new dev
+        terraform init -input=false -upgrade -reconfigure
       env:
         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        TF_WORKSPACE: azure-pension-demo-dev
     
     - name: Terraform Plan Dev
+      if: steps.terraform-changes.outputs.changed == 'true'
       run: cd terraform && terraform plan -var-file=environments/dev/terraform.tfvars -out=tfplan-dev
       env:
         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        TF_WORKSPACE: azure-pension-demo-dev
     
     - name: Terraform Apply Dev
+      if: steps.terraform-changes.outputs.changed == 'true'
       run: cd terraform && terraform apply -auto-approve tfplan-dev
       env:
         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        TF_WORKSPACE: azure-pension-demo-dev
 
   deploy-dev:
     needs: infrastructure
