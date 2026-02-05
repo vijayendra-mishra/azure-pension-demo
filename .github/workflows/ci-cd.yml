@@ -19,6 +19,8 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Run tests on PRs to main, and on pushes to main only
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     steps:
     - uses: actions/checkout@v4
     
@@ -64,13 +66,13 @@ jobs:
     - name: Terraform Init and Select Dev Workspace
       run: |
         cd terraform
-        terraform init -input=false
-        terraform workspace select dev || terraform workspace new dev
+        terraform init -input=false -upgrade -reconfigure
       env:
         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        TF_WORKSPACE: azure-pension-demo-dev
     
     - name: Terraform Plan Dev
       run: cd terraform && terraform plan -var-file=environments/dev/terraform.tfvars -out=tfplan-dev
@@ -79,6 +81,7 @@ jobs:
         ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        TF_WORKSPACE: azure-pension-demo-dev
     
     - name: Terraform Apply Dev
       run: cd terraform && terraform apply -auto-approve tfplan-dev
@@ -87,6 +90,7 @@ jobs:
         ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        TF_WORKSPACE: azure-pension-demo-dev
 
   deploy-dev:
     needs: infrastructure
