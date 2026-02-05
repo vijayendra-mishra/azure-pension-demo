@@ -36,8 +36,60 @@ jobs:
     - name: Test
       run: dotnet test PensionDemo.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"
 
-  deploy-dev:
+  infrastructure:
     needs: test
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' &&
+      !contains(github.event.head_commit.message, 'chore(main): release')
+    environment: dev
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: latest
+    
+    - name: Create .terraformrc
+      run: |
+        cat > ~/.terraformrc << EOF
+        credentials "app.terraform.io" {
+          token = "${{ secrets.TF_API_TOKEN }}"
+        }
+        EOF
+    
+    - name: Terraform Init
+      run: cd terraform && terraform init
+      env:
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+    
+    - name: Terraform Workspace Select Dev
+      run: cd terraform && terraform workspace select dev || terraform workspace new dev
+    
+    - name: Terraform Plan Dev
+      run: cd terraform && terraform plan -var-file=environments/dev/terraform.tfvars -out=tfplan-dev
+      env:
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+    
+    - name: Terraform Apply Dev
+      run: cd terraform && terraform apply -auto-approve tfplan-dev
+      env:
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+  deploy-dev:
+    needs: infrastructure
     runs-on: ubuntu-latest
     if: >
       github.event_name == 'push' && 
@@ -48,36 +100,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: latest
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-    
-    - name: Terraform Init
-      run: cd terraform && terraform init
-      env:
-        TF_TOKEN_APP_TERRAFORM_IO: ${{ secrets.TF_API_TOKEN }}
-    
-    - name: Terraform Workspace Select
-      run: cd terraform && terraform workspace select dev || terraform workspace new dev
-    
-    - name: Terraform Plan
-      run: cd terraform && terraform plan -out=tfplan
-      env:
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-    
-    - name: Terraform Apply
-      run: cd terraform && terraform apply -auto-approve tfplan
-      env:
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -128,28 +150,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: latest
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-    
-    - name: Terraform Init
-      run: cd terraform && terraform init
-      env:
-        TF_TOKEN_APP_TERRAFORM_IO: ${{ secrets.TF_API_TOKEN }}
-    
-    - name: Terraform Workspace Select
-      run: cd terraform && terraform workspace select prod || terraform workspace new prod
-    
-    - name: Terraform Plan (Manual Apply Required)
-      run: cd terraform && terraform plan -var-file=environments/prod/terraform.tfvars
-      env:
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
