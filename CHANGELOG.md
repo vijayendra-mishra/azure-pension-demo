@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.6.0...v1.6.1) (2026-02-05)
+
+
+### Bug Fixes
+
+* use release-type simple for .NET project ([da326a6](https://github.com/vijayendra-mishra/azure-pension-demo/commit/da326a60b3eae695116ae1d275c45bd87382c3ef))
+* use release-type simple for .NET project ([2c1296e](https://github.com/vijayendra-mishra/azure-pension-demo/commit/2c1296e74fd13aae1ce8dae6edd733c4a050455b))
+
 ## [1.6.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.5.3...v1.6.0) (2025-09-16)
 
 
