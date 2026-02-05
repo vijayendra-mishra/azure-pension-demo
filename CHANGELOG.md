@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.8.0...v1.9.0) (2026-02-05)
+
+
+### Features
+
+* add logging to pension queries ([635403a](https://github.com/vijayendra-mishra/azure-pension-demo/commit/635403aaea839e98c7cc62a552093393eb2a3ceb))
+* add logging to pension queries ([795272d](https://github.com/vijayendra-mishra/azure-pension-demo/commit/795272d97548ede845b457896d86243a039ee824))
+
 ## [1.8.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.7.0...v1.8.0) (2026-02-05)
 
 
