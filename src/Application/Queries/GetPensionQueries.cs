@@ -3,6 +3,9 @@ using MediatR;
 
 namespace Application.Queries;
 
+/// <summary>
+/// Query handler for retrieving pension information by ID
+/// </summary>
 public record GetPensionQuery(int Id) : IRequest<Pension?>;
 
 public class GetPensionQueryHandler : IRequestHandler<GetPensionQuery, Pension?>
