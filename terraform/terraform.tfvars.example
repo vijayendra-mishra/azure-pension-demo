@@ -3,7 +3,7 @@
 
 # Environment configuration
 environment = "dev"
-location    = "UK West"
+location    = "UK South"
 
 # Azure authentication should be set as environment variables:
 # ARM_CLIENT_ID=your-service-principal-client-id
