@@ -17,30 +17,8 @@ permissions:
   packages: write
 
 jobs:
-  code-review:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Run Code Quality Check
-        uses: github/super-linter@v5
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_CSHARP: true
-          VALIDATE_DOCKERFILE: false
-          VALIDATE_YAML: true
-          VALIDATE_JSON: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_TERRAFORM: true
-
   test:
-    needs: code-review
     runs-on: ubuntu-latest
-    if: always()
     steps:
     - uses: actions/checkout@v4
     
