@@ -8,7 +8,7 @@ resource "azurerm_resource_group" "pension" {
 }
 
 resource "azurerm_storage_account" "pension" {
-  name                     = "vjspensiondemo${var.environment}"
+  name                     = "vjspensiondev${var.environment}2"
   resource_group_name      = azurerm_resource_group.pension.name
   location                 = azurerm_resource_group.pension.location
   account_tier             = "Standard"
@@ -31,13 +31,13 @@ resource "azurerm_application_insights" "pension" {
   }
 }
 
-# App Service Plan per environment (CONSUMPTION - Pay per use!)
+# App Service Plan per environment (BASIC - Works without quota restrictions)
 resource "azurerm_service_plan" "pension" {
   name                = "vjs-pension-${var.environment}-plan"
   location            = azurerm_resource_group.pension.location
   resource_group_name = azurerm_resource_group.pension.name
   os_type             = "Linux"
-  sku_name            = "Y1"  # CONSUMPTION - Pay per execution (cheapest!)
+  sku_name            = "B1"  # BASIC - Standard tier (no quota restrictions)
 
   tags = {
     "azd-env-name" = var.environment
@@ -45,7 +45,7 @@ resource "azurerm_service_plan" "pension" {
 }
 
 resource "azurerm_linux_function_app" "pension" {
-  name                = "vjs-pension-${var.environment}-func"
+  name                = "vjs-pension-${var.environment}-func-2"
   location            = azurerm_resource_group.pension.location
   resource_group_name = azurerm_resource_group.pension.name
   service_plan_id     = azurerm_service_plan.pension.id

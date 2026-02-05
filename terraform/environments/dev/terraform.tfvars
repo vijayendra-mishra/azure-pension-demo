@@ -1,2 +1,2 @@
 environment = "dev"
-location    = "UK South"
+location    = "UK West"

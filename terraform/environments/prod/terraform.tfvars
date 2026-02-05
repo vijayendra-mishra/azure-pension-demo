@@ -1,2 +1,2 @@
 environment = "prod"
-location    = "UK South"
+location    = "UK West"
