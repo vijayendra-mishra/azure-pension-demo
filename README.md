@@ -1,32 +1,62 @@
-# 🏦 Azure Pension Demo# 🏦 Azure Pension Demo# 🏦 Azure Pension Demo
+# Azure Pension Demo# 🏦 Azure Pension Demo# 🏦 Azure Pension Demo# 🏦 Azure Pension Demo
 
 
 
-A .NET 8 Azure Functions demo with automated CI/CD, Infrastructure as Code, and complete documentation.
+.NET 8 Azure Functions with CI/CD automation and Terraform IaC.
 
 
 
-## 📚 DocumentationA comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.A comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.
+## Quick StartA .NET 8 Azure Functions demo with automated CI/CD, Infrastructure as Code, and complete documentation.
 
 
-
-- **[Project Overview](./docs/README.md)** - Architecture, setup, and features
-
-- **[CI/CD Pipeline](./docs/CI_CD_PIPELINE.md)** - Pipeline details and jobs
-
-- **[Release-Please Guide](./docs/RELEASE_PLEASE_GUIDE.md)** - Automated releases## 📚 Documentation## 🚀 Overview
-
-- **[Changelog](./docs/CHANGELOG.md)** - Release history
-
-
-
-## 🚀 Quick Start
-
-All project documentation has been organized in the `/docs` folder:This project showcases enterprise-grade Azure development patterns including:
 
 ```bash
 
-# Clone and setup
+git clone https://github.com/vijayendra-mishra/azure-pension-demo.git
+
+cd azure-pension-demo## 📚 DocumentationA comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.A comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.
+
+dotnet build
+
+dotnet test
+
+cd src/Functions && func start
+
+```- **[Project Overview](./docs/README.md)** - Architecture, setup, and features
+
+
+
+API: http://localhost:7071/api/health- **[CI/CD Pipeline](./docs/CI_CD_PIPELINE.md)** - Pipeline details and jobs
+
+
+
+## Documentation- **[Release-Please Guide](./docs/RELEASE_PLEASE_GUIDE.md)** - Automated releases## 📚 Documentation## 🚀 Overview
+
+
+
+- [Overview](./docs/README.md)- **[Changelog](./docs/CHANGELOG.md)** - Release history
+
+- [CI/CD Pipeline](./docs/CI_CD_PIPELINE.md)
+
+- [Release-Please Guide](./docs/RELEASE_PLEASE_GUIDE.md)
+
+- [Changelog](./docs/CHANGELOG.md)
+
+## 🚀 Quick Start
+
+## Stack
+
+All project documentation has been organized in the `/docs` folder:This project showcases enterprise-grade Azure development patterns including:
+
+- .NET 8 Azure Functions
+
+- Clean Architecture + CQRS```bash
+
+- GitHub Actions + Release Please
+
+- Terraform# Clone and setup
+
+- NUnit + Bruno tests
 
 git clone https://github.com/vijayendra-mishra/azure-pension-demo.git
 
