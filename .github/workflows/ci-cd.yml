@@ -1,6 +1,6 @@
 name: CI/CD Pipeline
 
-# Simplified pipeline: test on PR, deploy to dev on main merge, deploy to prod on release
+# Integrated CI/CD and Release Flow
 on:
   pull_request:
     branches: [ main ]
@@ -42,11 +42,30 @@ jobs:
     if: >
       github.event_name == 'push' && 
       github.ref == 'refs/heads/main' && 
-      !contains(github.event.head_commit.message, 'chore(main): release')
+      !contains(github.event.head_commit.message, 'chore(main): release') &&
+      !contains(github.head_ref, 'release-please')
     environment: dev
     
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: latest
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+    
+    - name: Terraform Init
+      run: cd terraform && terraform init
+    
+    - name: Terraform Workspace Select
+      run: cd terraform && terraform workspace select dev || terraform workspace new dev
+    
+    - name: Terraform Plan
+      run: cd terraform && terraform plan -out=tfplan
+    
+    - name: Terraform Apply
+      run: cd terraform && terraform apply -auto-approve tfplan
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -69,6 +88,23 @@ jobs:
         package: './output'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_DEV }}
 
+  release-please:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main' && 
+      !contains(github.event.head_commit.message, 'chore(main): release') &&
+      needs.deploy-dev.result == 'success'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          release-type: simple
+
   deploy-prod:
     needs: test
     runs-on: ubuntu-latest
@@ -80,6 +116,21 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: latest
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+    
+    - name: Terraform Init
+      run: cd terraform && terraform init
+    
+    - name: Terraform Workspace Select
+      run: cd terraform && terraform workspace select prod || terraform workspace new prod
+    
+    - name: Terraform Plan (Manual Apply Required)
+      run: cd terraform && terraform plan -var-file=environments/prod/terraform.tfvars
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -102,13 +153,13 @@ jobs:
         package: './output'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_PROD }}
 
-  post-release:
-    needs: [deploy-prod]
+  cleanup-release-branch:
+    needs: deploy-prod
     runs-on: ubuntu-latest
     if: >
       github.event_name == 'push' && 
       github.ref == 'refs/heads/main' && 
-      contains(github.event.head_commit.message, 'chore(main): release') && 
+      contains(github.event.head_commit.message, 'chore(main): release') &&
       needs.deploy-prod.result == 'success'
     
     steps:
@@ -117,13 +168,13 @@ jobs:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           fetch-depth: 0
       
-      - name: Clean up release-please branches
+      - name: Delete release-please branch
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           
           # Delete ANY branch starting with "release-please"
-          echo "🔍 Looking for branches starting with 'release-please'..."
+          echo "🔍 Looking for release-please branches to delete..."
           git ls-remote --heads origin | awk '/release-please/ { print $2 }' | sed 's|refs/heads/||' | while read branch; do
             if [ ! -z "$branch" ]; then
               echo "🗑️ Deleting branch: $branch"
@@ -131,4 +182,4 @@ jobs:
             fi
           done
           
-          echo "✅ All release-please branches cleaned up"
+          echo "✅ Cleanup complete"
