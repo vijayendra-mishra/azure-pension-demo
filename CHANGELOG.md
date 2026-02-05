@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.7.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.6.1...v1.7.0) (2026-02-05)
+
+
+### Features
+
+* add terraform file change detection and skip infrastructure job if no changes ([c4fbe57](https://github.com/vijayendra-mishra/azure-pension-demo/commit/c4fbe57c3927eaf1e0920329539cbf6fb7d72a13))
+* add terraform plan to dev and prod deployments and add AI code review workflow ([f3c3cce](https://github.com/vijayendra-mishra/azure-pension-demo/commit/f3c3cce37bf26b4fb411ab968117075c2cf957ea))
+
+
+### Bug Fixes
+
+* combine terraform init and workspace select to prevent hanging, add -input=false ([0460544](https://github.com/vijayendra-mishra/azure-pension-demo/commit/04605440c5ec517d8566ac013ea2cff80e920dd4))
+* properly configure terraform and azure credentials in workflow ([eff3019](https://github.com/vijayendra-mishra/azure-pension-demo/commit/eff30197a33dcc7f72833ccc8ca37311ede03dfc))
+* properly configure terraform and azure credentials in workflow ([aa7d9cd](https://github.com/vijayendra-mishra/azure-pension-demo/commit/aa7d9cd7d92f62d90d56c1f49ac654d9be4b73d3))
+* use TF_WORKSPACE environment variable to select workspace before terraform init ([5d7fd25](https://github.com/vijayendra-mishra/azure-pension-demo/commit/5d7fd25784d3f1bb5bfb8eb88ea8e67b5ec5ed2b))
+
 ## [1.6.1](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.6.0...v1.6.1) (2026-02-05)
 
 
