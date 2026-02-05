@@ -57,15 +57,27 @@ jobs:
     
     - name: Terraform Init
       run: cd terraform && terraform init
+      env:
+        TF_TOKEN_APP_TERRAFORM_IO: ${{ secrets.TF_API_TOKEN }}
     
     - name: Terraform Workspace Select
       run: cd terraform && terraform workspace select dev || terraform workspace new dev
     
     - name: Terraform Plan
       run: cd terraform && terraform plan -out=tfplan
+      env:
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
     
     - name: Terraform Apply
       run: cd terraform && terraform apply -auto-approve tfplan
+      env:
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -125,12 +137,19 @@ jobs:
     
     - name: Terraform Init
       run: cd terraform && terraform init
+      env:
+        TF_TOKEN_APP_TERRAFORM_IO: ${{ secrets.TF_API_TOKEN }}
     
     - name: Terraform Workspace Select
       run: cd terraform && terraform workspace select prod || terraform workspace new prod
     
     - name: Terraform Plan (Manual Apply Required)
       run: cd terraform && terraform plan -var-file=environments/prod/terraform.tfvars
+      env:
+        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
