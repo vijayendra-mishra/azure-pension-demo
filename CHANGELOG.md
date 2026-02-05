@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.7.0...v1.8.0) (2026-02-05)
+
+
+### Features
+
+* update pension query test data with new employee information ([5509ed0](https://github.com/vijayendra-mishra/azure-pension-demo/commit/5509ed039ced26bc31cac50ab3e11b1b54787f95))
+* update pension query test data with new employee information ([32c21e5](https://github.com/vijayendra-mishra/azure-pension-demo/commit/32c21e50a80270aa87d53acbbeeb63bc9dd122d4))
+
 ## [1.7.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.6.1...v1.7.0) (2026-02-05)
 
 
