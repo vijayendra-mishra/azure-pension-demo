@@ -1,122 +1,241 @@
-# 🏦 Azure Pension Demo
+# 🏦 Azure Pension Demo# 🏦 Azure Pension Demo
 
-A comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.
 
-## 🚀 Overview
 
-This project showcases enterprise-grade Azure development patterns including:
+A comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.A comprehensive demonstration of modern Azure development practices featuring a pension management system built with .NET 8 Azure Functions, complete CI/CD pipeline, and Infrastructure as Code.
 
-- **Azure Functions** with .NET 8 Isolated Worker Model
-- **Clean Architecture** with Domain, Application, and Functions layers
-- **Automated CI/CD** with GitHub Actions and Release Please
-- **Infrastructure as Code** with Terraform
+
+
+## 📚 Documentation## 🚀 Overview
+
+
+
+All project documentation has been organized in the `/docs` folder:This project showcases enterprise-grade Azure development patterns including:
+
+
+
+- **[Project Overview & Quick Start](./docs/README.md)** - Architecture, setup instructions, and features- **Azure Functions** with .NET 8 Isolated Worker Model
+
+- **[CI/CD Pipeline Documentation](./docs/CI_CD_PIPELINE.md)** - Complete pipeline explanation with job specifications- **Clean Architecture** with Domain, Application, and Functions layers
+
+- **[Release-Please Guide](./docs/RELEASE_PLEASE_GUIDE.md)** - Team guide for automated versioning and releases- **Automated CI/CD** with GitHub Actions and Release Please
+
+- **[Release History](./docs/CHANGELOG.md)** - Full changelog and version history- **Infrastructure as Code** with Terraform
+
 - **API Testing** with Bruno
-- **Monitoring & Observability** ready for Azure Application Insights
 
-## 🏗️ Architecture
+## 🚀 Quick Start- **Monitoring & Observability** ready for Azure Application Insights
 
-```
-├── src/
+
+
+### Prerequisites## 🏗️ Architecture
+
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+
+- [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)```
+
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)├── src/
+
 │   ├── Domain/           # Core business entities
-│   ├── Application/      # Business logic & CQRS queries
+
+### Get Started│   ├── Application/      # Business logic & CQRS queries
+
 │   ├── Functions/        # Azure Functions HTTP triggers
-│   └── Tests/           # Unit tests
-├── terraform/           # Infrastructure as Code
-├── bruno/              # API testing collections
-├── .github/workflows/  # CI/CD pipeline
-└── .release-please/   # Automated versioning
+
+1. **Clone the repository**│   └── Tests/           # Unit tests
+
+   ```bash├── terraform/           # Infrastructure as Code
+
+   git clone https://github.com/vijayendra-mishra/azure-pension-demo.git├── bruno/              # API testing collections
+
+   cd azure-pension-demo├── .github/workflows/  # CI/CD pipeline
+
+   ```└── .release-please/   # Automated versioning
+
 ```
 
-### Technology Stack
+2. **Restore and build**
 
-- **Runtime**: .NET 8 with Azure Functions v4
-- **Architecture**: Clean Architecture + CQRS with MediatR
+   ```bash### Technology Stack
+
+   dotnet restore
+
+   dotnet build- **Runtime**: .NET 8 with Azure Functions v4
+
+   ```- **Architecture**: Clean Architecture + CQRS with MediatR
+
 - **Infrastructure**: Azure Functions Consumption Plan
-- **CI/CD**: GitHub Actions with Release Please
-- **IaC**: Terraform with Azure Provider
-- **Testing**: Bruno for API testing, NUnit for unit tests
-- **Monitoring**: Azure Application Insights integration
 
-## 📋 Features
+3. **Run tests**- **CI/CD**: GitHub Actions with Release Please
 
-### Pension Management API
-- **GET /api/health** - Health check endpoint
-- **GET /api/pensions** - Retrieve all pension records
+   ```bash- **IaC**: Terraform with Azure Provider
+
+   dotnet test- **Testing**: Bruno for API testing, NUnit for unit tests
+
+   ```- **Monitoring**: Azure Application Insights integration
+
+
+
+4. **Start locally**## 📋 Features
+
+   ```bash
+
+   cd src/Functions### Pension Management API
+
+   func start- **GET /api/health** - Health check endpoint
+
+   ```- **GET /api/pensions** - Retrieve all pension records
+
 - **GET /api/pension/{id}** - Retrieve specific pension by ID
 
-### Sample Data
-The system includes sample pension data for:
-- John Smith (Defined Benefit Plan)
+Then test the endpoints:
+
+- Health: http://localhost:7071/api/health### Sample Data
+
+- All Pensions: http://localhost:7071/api/pensionsThe system includes sample pension data for:
+
+- Specific Pension: http://localhost:7071/api/pension/1- John Smith (Defined Benefit Plan)
+
 - Sarah Johnson (Defined Contribution Plan)  
-- Michael Seils (Executive Plan)
 
-## 🔄 CI/CD Pipeline
+## 🏗️ Architecture- Michael Seils (Executive Plan)
 
-The project implements a sophisticated CI/CD pipeline with the following flow:
 
-### Development Flow
-1. **Pull Request** → Runs tests
-2. **Merge to Main** → Tests + Deploy to Dev + Create Release Branch
-3. **Release Merge** → Tests + Deploy to Production + Cleanup
 
-### Pipeline Features
-- ✅ Automated testing on all PRs
+```## 🔄 CI/CD Pipeline
+
+├── src/
+
+│   ├── Domain/           # Core business entitiesThe project implements a sophisticated CI/CD pipeline with the following flow:
+
+│   ├── Application/      # Business logic & CQRS queries
+
+│   ├── Functions/        # Azure Functions HTTP triggers### Development Flow
+
+│   └── Tests/           # Unit tests1. **Pull Request** → Runs tests
+
+├── terraform/           # Infrastructure as Code2. **Merge to Main** → Tests + Deploy to Dev + Create Release Branch
+
+├── bruno/              # API testing collections3. **Release Merge** → Tests + Deploy to Production + Cleanup
+
+├── docs/               # Documentation
+
+└── .github/workflows/  # CI/CD pipeline### Pipeline Features
+
+```- ✅ Automated testing on all PRs
+
 - ✅ Environment-specific deployments (Dev/Prod)
-- ✅ Conventional commits with Release Please
+
+## 📋 Key Features- ✅ Conventional commits with Release Please
+
 - ✅ Automatic versioning and changelog generation
-- ✅ Branch cleanup after releases
 
-## 🚀 Quick Start
+- **Azure Functions** with .NET 8 Isolated Worker Model- ✅ Branch cleanup after releases
 
-### Prerequisites
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- **Clean Architecture** with Domain, Application, and Functions layers
+
+- **Automated CI/CD** with GitHub Actions and Release Please## 🚀 Quick Start
+
+- **Infrastructure as Code** with Terraform
+
+- **API Testing** with Bruno### Prerequisites
+
+- **Health Checks** and Azure Application Insights integration- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+
 - [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+
+## 🔄 CI/CD Pipeline- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+
 - [Terraform](https://www.terraform.io/downloads.html) (for infrastructure)
 
-### Local Development
+The project uses automated CI/CD with:
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/vijayendra-mishra/azure-pension-demo.git
+- ✅ Automated testing on all PRs### Local Development
+
+- ✅ Environment-specific deployments (Dev/Prod)
+
+- ✅ Conventional commits with Release Please1. **Clone the repository**
+
+- ✅ Automatic versioning and changelog generation   ```bash
+
+- ✅ Branch cleanup after releases   git clone https://github.com/vijayendra-mishra/azure-pension-demo.git
+
    cd azure-pension-demo
-   ```
 
-2. **Restore dependencies**
-   ```bash
-   dotnet restore
-   ```
+See [CI/CD Pipeline Documentation](./docs/CI_CD_PIPELINE.md) for details.   ```
 
-3. **Build the solution**
+
+
+## 🎯 Development Workflow2. **Restore dependencies**
+
    ```bash
+
+1. **Create feature branch** from `main`   dotnet restore
+
+2. **Make changes** and commit with conventional messages (`feat:`, `fix:`, etc.)   ```
+
+3. **Create Pull Request** → Tests run automatically
+
+4. **Merge to main** → Deploys to Dev + Creates release PR3. **Build the solution**
+
+5. **Review release PR** → Merge to trigger production deployment   ```bash
+
    dotnet build
-   ```
 
-4. **Run tests**
-   ```bash
-   dotnet test
-   ```
+Learn more in [Release-Please Guide](./docs/RELEASE_PLEASE_GUIDE.md).   ```
 
-5. **Start the Functions locally**
+
+
+## 📊 Environments4. **Run tests**
+
    ```bash
-   cd src/Functions
+
+| Environment | Trigger | URL |   dotnet test
+
+|-----------|---------|-----|   ```
+
+| **Dev** | Every push to main | https://vjs-pension-dev-func-2.azurewebsites.net |
+
+| **Prod** | Release commits only | https://vjs-pension-prod-func-2.azurewebsites.net |5. **Start the Functions locally**
+
+   ```bash
+
+## 🤝 Contributing   cd src/Functions
+
    func start
-   ```
 
-6. **Test the endpoints**
-   - Health: http://localhost:7071/api/health
-   - All Pensions: http://localhost:7071/api/pensions
-   - Specific Pension: http://localhost:7071/api/pension/1
+1. Fork the repository   ```
 
-## 🧪 Testing
+2. Create a feature branch
 
-### Unit Tests
+3. Make your changes6. **Test the endpoints**
+
+4. Write tests   - Health: http://localhost:7071/api/health
+
+5. Commit using conventional format: `feat:`, `fix:`, etc.   - All Pensions: http://localhost:7071/api/pensions
+
+6. Push and create a Pull Request   - Specific Pension: http://localhost:7071/api/pension/1
+
+
+
+## 📞 Support## 🧪 Testing
+
+
+
+For questions or issues, please open a GitHub issue.### Unit Tests
+
 ```bash
-dotnet test src/Tests/
+
+---dotnet test src/Tests/
+
 ```
 
+**Built with ❤️ using Azure Functions, .NET 8, and modern DevOps practices**
+
 ### API Testing with Bruno
-1. Install [Bruno](https://www.usebruno.com/)
+
+See [full documentation](./docs/) for more details.1. Install [Bruno](https://www.usebruno.com/)
+
 2. Open the `bruno/` folder as a collection
 3. Select environment (Local/Dev/Prod)
 4. Run the test collection
