@@ -140,15 +140,18 @@ jobs:
               return;
             }
             
-            const summary = JSON.parse(fs.readFileSync(summaryFile, 'utf8'));
+            const data = JSON.parse(fs.readFileSync(summaryFile, 'utf8'));
+            const summary = data.summary || {};
+            
             const lineCoverage = (summary.linecoverage || 0).toFixed(2);
             const branchCoverage = (summary.branchcoverage || 0).toFixed(2);
+            const methodCoverage = (summary.methodcoverage || 0).toFixed(2);
             const threshold = 80;
             const passed = lineCoverage >= threshold;
             
             const statusEmoji = passed ? '✅' : '❌';
             
-            const comment = `## ${statusEmoji} Code Coverage Report\n\n| Metric | Coverage | Status |\n|--------|----------|--------|\n| Line Coverage | ${lineCoverage}% | ${lineCoverage >= threshold ? '✅ Pass' : '❌ Fail'} |\n| Branch Coverage | ${branchCoverage}% | - |\n| Threshold | ${threshold}% | - |\n\n${passed ? '✅ Coverage meets the required threshold' : '❌ Coverage below required threshold - please add more tests'}`;
+            const comment = `## ${statusEmoji} Code Coverage Report\n\n| Metric | Coverage | Status |\n|--------|----------|--------|\n| Line Coverage | ${lineCoverage}% | ${lineCoverage >= threshold ? '✅ Pass' : '❌ Fail'} |\n| Branch Coverage | ${branchCoverage}% | - |\n| Method Coverage | ${methodCoverage}% | - |\n| Threshold | ${threshold}% | - |\n\n${passed ? '✅ Coverage meets the required threshold' : '❌ Coverage below required threshold - please add more tests'}`;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,
