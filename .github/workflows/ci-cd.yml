@@ -36,17 +36,23 @@ jobs:
       run: dotnet build PensionDemo.sln --no-restore
     
     - name: Test
-      run: dotnet test PensionDemo.sln --no-build --verbosity normal --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverageFormat=cobertura /p:ExcludeByAttribute=Obsolete
+      run: dotnet test PensionDemo.sln --no-build --verbosity normal --logger "console;verbosity=detailed" /p:CollectCoverage=true /p:CoverageFormat=cobertura /p:ExcludeByAttribute=Obsolete /p:CoverageIncludeSource=true
 
     - name: Generate Coverage Report
       run: |
         dotnet tool install -g dotnet-reportgenerator-globaltool || dotnet tool update -g dotnet-reportgenerator-globaltool
-        find . -name "coverage.cobertura.xml" -type f
-        if [ -f coverage.cobertura.xml ] || [ ! -z "$(find . -name 'coverage.cobertura.xml' -type f)" ]; then
-          reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:coverage -reporttypes:"HtmlInline;JsonSummary" || echo "⚠️  Report generation had issues but continuing..."
-        else
-          echo "⚠️  No coverage files found yet"
-        fi
+        echo "🔍 Looking for coverage files..."
+        find . -name "coverage.cobertura.xml" -type f | head -20
+        echo "📊 Generating coverage report..."
+        reportgenerator "-reports:**/coverage.cobertura.xml" -targetdir:coverage -reporttypes:"HtmlInline;JsonSummary" -verbosity:Info
+
+    - name: Upload Coverage Artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage/
+        retention-days: 30
 
     - name: Check Code Coverage Threshold (80%)
       run: |
