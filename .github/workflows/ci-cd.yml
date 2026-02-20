@@ -76,18 +76,18 @@ jobs:
           -verbosity:Info
         
         # Check if report was created
-        if [ ! -f coverage-report/summary.json ]; then
-          echo "❌ Report generation failed - summary.json not created"
+        if [ ! -f coverage-report/Summary.json ]; then
+          echo "❌ Report generation failed - Summary.json not created"
           ls -la coverage-report/
           exit 1
         fi
         
         echo "✅ Coverage report generated successfully"
-        cat coverage-report/summary.json
+        cat coverage-report/Summary.json
         
         # Ensure coverage dir exists and copy summary
         mkdir -p coverage
-        cp coverage-report/summary.json coverage/summary.json
+        cp coverage-report/Summary.json coverage/summary.json
         echo "✅ Summary copied to coverage/summary.json"
 
     - name: Upload Coverage Artifacts
