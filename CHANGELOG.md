@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.10.0...v1.11.0) (2026-02-20)
+
+
+### Features
+
+* update pension monthly amount ([b92cdf3](https://github.com/vijayendra-mishra/azure-pension-demo/commit/b92cdf33b6c2042376fd778f318137445c765522))
+* update pension monthly amount ([7c611ca](https://github.com/vijayendra-mishra/azure-pension-demo/commit/7c611caf91b4d87f7bebd4f2ebafbc089643d644))
+
 ## [1.10.0](https://github.com/vijayendra-mishra/azure-pension-demo/compare/v1.9.0...v1.10.0) (2026-02-20)
 
 
