@@ -55,24 +55,40 @@ jobs:
         dotnet tool install -g dotnet-reportgenerator-globaltool || dotnet tool update -g dotnet-reportgenerator-globaltool
         
         echo "🔍 Finding all coverage files..."
-        find . -type f -name "*.cobertura.xml" | tee /tmp/coverage_files.txt
+        echo "Searching for *.cobertura.xml files..."
+        find . -type f -name "*.cobertura.xml" -exec echo "  Found: {}" \;
         
-        echo "📊 Generating coverage report..."
-        reportgenerator \
-          -reports:"coverage/*.cobertura.xml" \
-          -targetdir:coverage-report \
-          -reporttypes:HtmlInline,JsonSummary || true
+        COVERAGE_FILES=$(find . -type f -name "*.cobertura.xml" | paste -sd ";" -)
+        echo "Files to process: $COVERAGE_FILES"
         
-        # Validate report was created
-        if [ -f coverage-report/summary.json ]; then
-          echo "✅ Coverage report generated"
-          cat coverage-report/summary.json
-          cp coverage-report/summary.json coverage/summary.json
-        else
-          echo "⚠️  Summary not found, checking for coverage files..."
-          ls -la coverage/ || echo "Coverage dir empty"
-          exit 0
+        if [ -z "$COVERAGE_FILES" ]; then
+          echo "❌ No coverage files found!"
+          exit 1
         fi
+        
+        echo "📊 Generating coverage report from: $COVERAGE_FILES"
+        mkdir -p coverage-report
+        
+        reportgenerator \
+          -reports:"$COVERAGE_FILES" \
+          -targetdir:coverage-report \
+          -reporttypes:HtmlInline,JsonSummary \
+          -verbosity:Info
+        
+        # Check if report was created
+        if [ ! -f coverage-report/Summary.json ]; then
+          echo "❌ Report generation failed - Summary.json not created"
+          ls -la coverage-report/
+          exit 1
+        fi
+        
+        echo "✅ Coverage report generated successfully"
+        cat coverage-report/Summary.json
+        
+        # Ensure coverage dir exists and copy summary
+        mkdir -p coverage
+        cp coverage-report/Summary.json coverage/summary.json
+        echo "✅ Summary copied to coverage/summary.json"
 
     - name: Upload Coverage Artifacts
       if: always()
@@ -90,12 +106,17 @@ jobs:
         SUMMARY_FILE="coverage/summary.json"
         
         if [ ! -f "$SUMMARY_FILE" ]; then
-          echo "⚠️  Coverage report not generated - tests may have failed"
+          echo "⚠️  Coverage summary not found at $SUMMARY_FILE"
+          echo "   This means coverage report generation failed in previous step"
           exit 0
         fi
         
-        # Extract coverage using jq or grep
+        echo "📄 Reading coverage from: $SUMMARY_FILE"
+        cat "$SUMMARY_FILE"
+        
+        # Extract coverage using grep
         coverage=$(cat "$SUMMARY_FILE" | grep -o '"linecoverage":[^,]*' | grep -o '[0-9.]*' || echo "0")
+        echo ""
         echo "📊 Line Coverage: ${coverage}%"
         
         THRESHOLD=80
@@ -119,15 +140,18 @@ jobs:
               return;
             }
             
-            const summary = JSON.parse(fs.readFileSync(summaryFile, 'utf8'));
+            const data = JSON.parse(fs.readFileSync(summaryFile, 'utf8'));
+            const summary = data.summary || {};
+            
             const lineCoverage = (summary.linecoverage || 0).toFixed(2);
             const branchCoverage = (summary.branchcoverage || 0).toFixed(2);
+            const methodCoverage = (summary.methodcoverage || 0).toFixed(2);
             const threshold = 80;
             const passed = lineCoverage >= threshold;
             
             const statusEmoji = passed ? '✅' : '❌';
             
-            const comment = `## ${statusEmoji} Code Coverage Report\n\n| Metric | Coverage | Status |\n|--------|----------|--------|\n| Line Coverage | ${lineCoverage}% | ${lineCoverage >= threshold ? '✅ Pass' : '❌ Fail'} |\n| Branch Coverage | ${branchCoverage}% | - |\n| Threshold | ${threshold}% | - |\n\n${passed ? '✅ Coverage meets the required threshold' : '❌ Coverage below required threshold - please add more tests'}`;
+            const comment = `## ${statusEmoji} Code Coverage Report\n\n| Metric | Coverage | Status |\n|--------|----------|--------|\n| Line Coverage | ${lineCoverage}% | ${lineCoverage >= threshold ? '✅ Pass' : '❌ Fail'} |\n| Branch Coverage | ${branchCoverage}% | - |\n| Method Coverage | ${methodCoverage}% | - |\n| Threshold | ${threshold}% | - |\n\n${passed ? '✅ Coverage meets the required threshold' : '❌ Coverage below required threshold - please add more tests'}`;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,
