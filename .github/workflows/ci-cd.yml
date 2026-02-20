@@ -35,16 +35,44 @@ jobs:
     - name: Build
       run: dotnet build PensionDemo.sln --no-restore
     
-    - name: Test
-      run: dotnet test PensionDemo.sln --no-build --verbosity normal --logger "console;verbosity=detailed" /p:CollectCoverage=true /p:CoverageFormat=cobertura /p:ExcludeByAttribute=Obsolete /p:CoverageIncludeSource=true
+    - name: Test with Coverage
+      run: |
+        dotnet add src/Tests/Tests.csproj package coverlet.collector --version 6.0.0 2>/dev/null || true
+        dotnet test PensionDemo.sln \
+          --no-build \
+          --verbosity normal \
+          --collect:"XPlat Code Coverage" \
+          --logger "trx;LogFileName=test-results.trx" \
+          /p:CollectCoverage=true \
+          /p:CoverageFormat=cobertura \
+          /p:CoverageFileName=coverage.cobertura.xml \
+          /p:CoverageIncludeSource=true
 
     - name: Generate Coverage Report
+      if: always()
       run: |
-        dotnet tool install -g dotnet-reportgenerator-globaltool || dotnet tool update -g dotnet-reportgenerator-globaltool
-        echo "🔍 Looking for coverage files..."
-        find . -name "coverage.cobertura.xml" -type f | head -20
-        echo "📊 Generating coverage report..."
-        reportgenerator "-reports:**/coverage.cobertura.xml" -targetdir:coverage -reporttypes:"HtmlInline;JsonSummary" -verbosity:Info
+        echo "📦 Installing ReportGenerator..."
+        dotnet tool install -g dotnet-reportgenerator-globaltool --version 5.5.1 || dotnet tool update -g dotnet-reportgenerator-globaltool --version 5.5.1
+        
+        echo "🔍 Finding coverage files..."
+        find . -name "coverage.cobertura.xml" -type f
+        
+        echo "📊 Generating HTML coverage report..."
+        mkdir -p coverage
+        
+        # Get all coverage files and generate report
+        COVERAGE_FILES=$(find . -name "coverage.cobertura.xml" -type f | tr '\n' ';')
+        
+        if [ -z "$COVERAGE_FILES" ]; then
+          echo "❌ No coverage files found! Test execution may have failed."
+          ls -la src/Tests/bin/Debug/net8.0/ 2>/dev/null || echo "Tests bin directory not found"
+          exit 1
+        fi
+        
+        reportgenerator -reports:"$COVERAGE_FILES" -targetdir:coverage -reporttypes:HtmlInline,JsonSummary,Badges -verbosity:Verbose
+        
+        echo "✅ Coverage report generated successfully"
+        ls -la coverage/
 
     - name: Upload Coverage Artifacts
       if: always()
@@ -55,18 +83,24 @@ jobs:
         retention-days: 30
 
     - name: Check Code Coverage Threshold (80%)
+      if: always()
       run: |
         if [ ! -f coverage/summary.json ]; then
-          echo "⚠️  Coverage report not found, checking test results..."
-          exit 0
-        fi
-        coverage=$(cat coverage/summary.json | grep -o '"linecoverage":[^,]*' | grep -o '[0-9.]*$')
-        echo "Line Coverage: ${coverage}%"
-        if (( $(echo "$coverage < 80" | bc -l) )); then
-          echo "❌ Code coverage is ${coverage}%, below required 80%"
+          echo "⚠️  Coverage report not found"
           exit 1
         fi
-        echo "✅ Code coverage is ${coverage}%, meets required 80%"
+        
+        # Extract line coverage from summary.json
+        coverage=$(jq '.linecoverage // 0' coverage/summary.json)
+        echo "📊 Line Coverage: ${coverage}%"
+        
+        # Check threshold
+        THRESHOLD=80
+        if (( $(echo "$coverage < $THRESHOLD" | bc -l) )); then
+          echo "❌ Code coverage ${coverage}% is below required ${THRESHOLD}%"
+          exit 1
+        fi
+        echo "✅ Code coverage ${coverage}% meets required ${THRESHOLD}% threshold"
 
     - name: Comment PR with Coverage Report
       if: github.event_name == 'pull_request' && always()
@@ -77,26 +111,29 @@ jobs:
           const summaryFile = 'coverage/summary.json';
           
           try {
-            if (fs.existsSync(summaryFile)) {
-              const summary = JSON.parse(fs.readFileSync(summaryFile, 'utf8'));
-              const lineCoverage = summary.linecoverage || 0;
-              const branchCoverage = summary.branchcoverage || 0;
-              
-              const badge = lineCoverage >= 80 ? '✅' : '❌';
-              
-              const comment = `## ${badge} Code Coverage Report\n\n| Metric | Coverage |\n|--------|----------|\n| Line Coverage | ${lineCoverage.toFixed(2)}% |\n| Branch Coverage | ${branchCoverage.toFixed(2)}% |\n| Threshold | 80% |\n\n${lineCoverage >= 80 ? '✅ Coverage meets threshold' : '❌ Coverage below 80% threshold'}`;
-              
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: comment
-              });
-            } else {
+            if (!fs.existsSync(summaryFile)) {
               console.log('Coverage report not found, skipping PR comment');
+              return;
             }
+            
+            const summary = JSON.parse(fs.readFileSync(summaryFile, 'utf8'));
+            const lineCoverage = (summary.linecoverage || 0).toFixed(2);
+            const branchCoverage = (summary.branchcoverage || 0).toFixed(2);
+            const threshold = 80;
+            const passed = lineCoverage >= threshold;
+            
+            const statusEmoji = passed ? '✅' : '❌';
+            
+            const comment = `## ${statusEmoji} Code Coverage Report\n\n| Metric | Coverage | Status |\n|--------|----------|--------|\n| Line Coverage | ${lineCoverage}% | ${lineCoverage >= threshold ? '✅ Pass' : '❌ Fail'} |\n| Branch Coverage | ${branchCoverage}% | - |\n| Threshold | ${threshold}% | - |\n\n${passed ? '✅ Coverage meets the required threshold' : '❌ Coverage below required threshold - please add more tests'}`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
           } catch (error) {
-            console.log('Error reading coverage report:', error.message);
+            console.error('Error posting coverage comment:', error.message);
           }
 
   infrastructure:
